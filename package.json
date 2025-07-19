@@ -1,0 +1,79 @@
+{
+  "name": "better-pages-create",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.4.1",
+  "description": "Better react file routing",
+  "author": "Chiko",
+  "license": "MIT",
+  "keywords": [
+    "vite",
+    "react",
+    "react-router",
+    "pages",
+    "routing",
+    "typescript"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run build -- --watch --ignore-watch examples",
+    "start": "pnpm --filter react dev",
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "release": "bumpp --commit --tag --push",
+    "publish:ci": "esno scripts/publish.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "peerDependencies": {
+    "vite": "> 5.0.0"
+  },
+  "dependencies": {
+    "@types/debug": "^4.1.12",
+    "debug": "^4.4.1",
+    "dequal": "^2.0.3",
+    "extract-comments": "^1.1.0",
+    "local-pkg": "^1.1.1",
+    "micromatch": "^4.0.8",
+    "picocolors": "^1.1.1",
+    "tinyglobby": "^0.2.14",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.16.2",
+    "@antfu/utils": "^9.2.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/micromatch": "^4.0.9",
+    "@types/node": "^22.16.3",
+    "@vitest/ui": "^3.2.4",
+    "bumpp": "^10.2.0",
+    "eslint": "^9.29.0",
+    "esno": "^4.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "playwright": "^1.54.1",
+    "react": "^19.1.0",
+    "react-router": "^7.7.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{css,html,json,js,jsx,ts,tsx,mdx}": [
+      "eslint --fix"
+    ]
+  }
+}
