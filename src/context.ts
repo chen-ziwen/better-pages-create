@@ -3,19 +3,13 @@
  * 管理页面文件的发现、路由生成和热模块替换
  */
 
-// 导入类型定义
-import type { Logger, ViteDevServer } from 'vite' // Vite 相关类型
-import type { PageOptions, ResolvedOptions, UserOptions } from './types' // 插件类型
-
-// 导入 Node.js 内置模块
-import { join, resolve } from 'node:path' // 路径处理
-import process from 'node:process' // 进程相关
-
-// 导入工具函数
+import type { Logger, ViteDevServer } from 'vite'
+import type { PageOptions, ResolvedOptions, UserOptions } from './types'
+import { join, resolve } from 'node:path'
+import process from 'node:process'
 import { slash, toArray } from '@antfu/utils' // 路径和数组工具
 import { getPageFiles } from './files' // 文件获取
 import { resolveOptions } from './options' // 选项解析
-
 import { debug, invalidatePagesModule, isTarget } from './utils' // 调试和工具函数
 
 /**
@@ -32,8 +26,8 @@ export interface PageRoute {
  * 核心类，负责管理页面发现、路由生成和开发服务器集成
  */
 export class PageContext {
-  private _server: ViteDevServer | undefined // Vite 开发服务器实例
-  private _pageRouteMap = new Map<string, PageRoute>() // 页面路由映射表
+  private mServer: ViteDevServer | undefined // Vite 开发服务器实例
+  private mPageRouteMap = new Map<string, PageRoute>() // 页面路由映射表
 
   rawOptions: UserOptions // 原始用户选项
   root: string // 项目根目录
@@ -66,10 +60,10 @@ export class PageContext {
    * @param server - Vite 开发服务器实例
    */
   setupViteServer(server: ViteDevServer) {
-    if (this._server === server)
+    if (this.mServer === server)
       return // 如果是同一个服务器实例，直接返回
 
-    this._server = server
+    this.mServer = server
     this.setupWatcher(server.watcher) // 设置文件监听器
   }
 
@@ -107,7 +101,7 @@ export class PageContext {
         path = slash(path) // 标准化路径
         if (!isTarget(path, this.options)) // 检查是否为目标文件
           return
-        const page = this._pageRouteMap.get(path) // 获取页面信息
+        const page = this.mPageRouteMap.get(path) // 获取页面信息
         if (page)
           // 调用解析器的热模块替换处理函数
           await this.options.resolver.hmr?.changed?.(this, path)
@@ -132,7 +126,7 @@ export class PageContext {
       // 生成路由路径：基础路由 + 相对路径（去除扩展名）
       const route = slash(join(pageDir.baseRoute, p.replace(`${pageDirPath}/`, '').replace(`.${extension}`, '')))
       // 添加到路由映射表
-      this._pageRouteMap.set(p, {
+      this.mPageRouteMap.set(p, {
         path: p, // 文件路径
         route, // 路由路径
       })
@@ -148,7 +142,7 @@ export class PageContext {
    */
   async removePage(path: string) {
     debug.pages('remove', path)
-    this._pageRouteMap.delete(path) // 从映射表中删除
+    this.mPageRouteMap.delete(path) // 从映射表中删除
     // 调用解析器的热模块替换移除处理函数
     await this.options.resolver.hmr?.removed?.(this, path)
   }
@@ -158,13 +152,13 @@ export class PageContext {
    * 当页面发生变化时，使相关模块失效并触发页面重新加载
    */
   onUpdate() {
-    if (!this._server)
+    if (!this.mServer)
       return // 如果没有开发服务器，直接返回
 
-    invalidatePagesModule(this._server) // 使页面模块失效
+    invalidatePagesModule(this.mServer) // 使页面模块失效
     debug.hmr('Reload generated pages.')
     // 发送全页面重新加载消息
-    this._server.ws.send({
+    this.mServer.ws.send({
       type: 'full-reload',
     })
   }
@@ -214,6 +208,6 @@ export class PageContext {
    * @returns 页面路由映射表
    */
   get pageRouteMap() {
-    return this._pageRouteMap
+    return this.mPageRouteMap
   }
 }

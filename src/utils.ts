@@ -3,29 +3,21 @@
  * 包含插件使用的各种辅助函数和调试工具
  */
 
-// 导入类型定义
-import type { ModuleNode, ViteDevServer } from 'vite' // Vite 相关类型
-import type { ResolvedOptions } from './types' // 插件选项类型
-
-// 导入 Node.js 内置模块
+import type { ModuleNode, ViteDevServer } from 'vite'
+import type { ResolvedOptions } from './types'
 import { resolve, win32 } from 'node:path' // 路径处理工具
 import { URLSearchParams } from 'node:url' // URL 查询参数解析
-
-// 导入第三方工具
 import { slash } from '@antfu/utils' // 路径斜杠标准化
 import Debug from 'debug' // 调试工具
 import micromatch from 'micromatch' // 文件匹配工具
-
-// 导入常量
 import {
-  cacheAllRouteRE, // 捕获所有路由正则
   countSlashRE, // 计算斜杠正则
-  dynamicRouteRE, // 动态路由正则
+  groupRE,
   MODULE_ID_VIRTUAL, // 虚拟模块 ID
-  nuxtCacheAllRouteRE, // Nuxt 捕获所有路由正则
-  nuxtDynamicRouteRE, // Nuxt 动态路由正则
-  replaceDynamicRouteRE, // 替换动态路由正则
+  optionalRE,
+  paramRE,
   replaceIndexRE, // 替换 index 正则
+  splatRE,
 } from './constants'
 
 /**
@@ -94,30 +86,6 @@ export function isTarget(path: string, options: ResolvedOptions) {
 }
 
 /**
- * 检查路由路径是否为动态路由
- * @param routePath - 路由路径
- * @param nuxtStyle - 是否使用 Nuxt 风格，默认为 false
- * @returns 是否为动态路由
- */
-export function isDynamicRoute(routePath: string, nuxtStyle = false) {
-  return nuxtStyle
-    ? nuxtDynamicRouteRE.test(routePath) // Nuxt 风格：_param
-    : dynamicRouteRE.test(routePath) // Next 风格：[param]
-}
-
-/**
- * 检查路由路径是否为捕获所有路由
- * @param routePath - 路由路径
- * @param nuxtStyle - 是否使用 Nuxt 风格，默认为 false
- * @returns 是否为捕获所有路由
- */
-export function isCatchAllRoute(routePath: string, nuxtStyle = false) {
-  return nuxtStyle
-    ? nuxtCacheAllRouteRE.test(routePath) // Nuxt 风格：_
-    : cacheAllRouteRE.test(routePath) // Next 风格：[...param]
-}
-
-/**
  * 解析导入模式
  * @param filepath - 文件路径
  * @param options - 已解析的选项
@@ -158,50 +126,27 @@ export function normalizeCase(str: string, caseSensitive: boolean) {
   return str // 敏感时保持原样
 }
 
-/**
- * 标准化路由名称
- * 处理动态路由的名称，提取参数名称
- * @param name - 原始名称
- * @param isDynamic - 是否为动态路由
- * @param nuxtStyle - 是否使用 Nuxt 风格，默认为 false
- * @returns 标准化后的名称
- */
-export function normalizeName(
-  name: string,
-  isDynamic: boolean,
-  nuxtStyle = false,
-) {
-  if (!isDynamic)
-    return name // 非动态路由直接返回原名称
-
-  return nuxtStyle
-    ? name.replace(nuxtDynamicRouteRE, '$1') || 'all' // Nuxt 风格：_param -> param
-    : name.replace(replaceDynamicRouteRE, '$1') // Next 风格：[param] -> param
-}
-
-/**
- * 构建 React 路由路径
- * 将文件名转换为 React Router 可识别的路由路径
- * @param node - 文件名节点
- * @param nuxtStyle - 是否使用 Nuxt 风格，默认为 false
- * @returns React Router 路由路径
- */
+// /**
+//  * 构建 React 路由路径
+//  * 将文件名转换为 React Router 可识别的路由路径
+//  * @param name - 文件名
+//  * @returns React Router 路由路径
+//  */
 export function buildReactRoutePath(
-  node: string,
-  nuxtStyle = false,
-): string | undefined {
-  const isDynamic = isDynamicRoute(node, nuxtStyle) // 检查是否为动态路由
-  const isCatchAll = isCatchAllRoute(node, nuxtStyle) // 检查是否为捕获所有路由
-  const normalizedName = normalizeName(node, isDynamic, nuxtStyle) // 标准化名称
-
-  if (isDynamic) {
-    if (isCatchAll)
-      return '*' // 捕获所有路由返回 '*'
-
-    return `:${normalizedName}` // 动态路由返回 ':param'
-  }
-
-  return `${normalizedName}` // 静态路由返回原名称
+  name: string,
+) {
+  return name
+    // 去除路由组 去除路由组 (fileName) 或 (fileName)_
+    .replace(...groupRE)
+    // 替换 [...param] 为 *
+    .replace(...splatRE)
+    // 替换 [param] 为 :param
+    .replace(...paramRE)
+    .split('/')
+    .filter(Boolean)
+    // -[lang] 或 -en 转换为 :lang? 和 :en?
+    .map(node => node.replace(...optionalRE))
+    .join('/')
 }
 
 /**

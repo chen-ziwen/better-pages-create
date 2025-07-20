@@ -64,21 +64,16 @@ export const syncIndexResolver: ImportModeResolver = (filepath, options) => {
  * @returns 解析器对象
  */
 function getResolver(originalResolver: UserOptions['resolver']) {
-  // 如果用户没有指定解析器，默认使用 'vue'
-  let resolver = originalResolver || 'vue'
+  let resolver = originalResolver || 'react'
 
-  // 如果解析器不是字符串（即已经是解析器对象），直接返回
   if (typeof resolver !== 'string')
     return resolver
 
-  // 根据字符串类型的解析器名称，创建对应的解析器实例
   switch (resolver) {
     case 'react':
-      // 创建 React 解析器实例
       resolver = reactResolver()
       break
     default:
-      // 抛出错误：不支持的解析器类型
       throw new Error(`Unsupported resolver: ${resolver}`)
   }
   return resolver
@@ -124,9 +119,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
   // 解析页面目录配置
   const resolvedDirs = resolvePageDirs(dirs, root, exclude)
 
-  // 确定路由风格：使用用户配置的路由风格或默认的 'next' 风格
-  const routeStyle = userOptions.routeStyle || 'next'
-
   // 确定模块 ID 列表：使用用户配置的单个模块 ID 或解析器提供的模块 ID 列表或默认的模块 ID 列表
   const moduleIds = userOptions.moduleId
     ? [userOptions.moduleId] // 如果用户指定了单个模块 ID，转为数组
@@ -135,7 +127,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
   // 构建完整的已解析选项对象
   const resolvedOptions: ResolvedOptions = {
     dirs: resolvedDirs, // 已解析的页面目录列表
-    routeStyle, // 路由风格（next/nuxt/remix）
     routeBlockLang, // 路由块语言（json5/json/yaml/yml）
     moduleIds, // 模块 ID 列表
     root, // 项目根目录

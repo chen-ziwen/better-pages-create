@@ -61,14 +61,62 @@ export default function HomePage() {
           </ul>
         </div>
 
-        {/* 捕获所有路由 */}
+        {/* 路由组 */}
         <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <h3>🌐 捕获所有路由</h3>
+          <h3>📂 路由组 (Route Groups)</h3>
+          <ul>
+            <li>
+              <Link to="/login">登录页面</Link>
+              {' '}
+              <small>(auth)/login.tsx</small>
+            </li>
+            <li>
+              <Link to="/register">注册页面</Link>
+              {' '}
+              <small>(auth)/register.tsx</small>
+            </li>
+            <li>
+              <Link to="/stats">数据统计</Link>
+              {' '}
+              <small>(dashboard)/stats.tsx</small>
+            </li>
+          </ul>
+        </div>
+
+        {/* Splat 路由 */}
+        <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <h3>🌐 Splat 路由 (Catch-all)</h3>
           <ul>
             <li><Link to="/docs/getting-started">快速开始</Link></li>
             <li><Link to="/docs/api/users">Users API</Link></li>
             <li><Link to="/docs/guides/installation">安装指南</Link></li>
-            <li><Link to="/docs/not/found/path">不存在的文档</Link></li>
+            <li>
+              <Link to="/files">文件浏览器</Link>
+              {' '}
+              <small>[...segments].tsx</small>
+            </li>
+            <li><Link to="/files/documents/2023">文件子目录</Link></li>
+          </ul>
+        </div>
+
+        {/* 可选参数 */}
+        <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <h3>❓ 可选参数 (Optional Params)</h3>
+          <ul>
+            <li>
+              <Link to="/shop">商店首页</Link>
+              {' '}
+              <small>-[category].tsx</small>
+            </li>
+            <li><Link to="/shop/electronics">电子产品</Link></li>
+            <li><Link to="/shop/clothing">服装分类</Link></li>
+            <li>
+              <Link to="/posts">技术博客</Link>
+              {' '}
+              <small>-[lang].tsx</small>
+            </li>
+            <li><Link to="/posts/en">English Posts</Link></li>
+            <li><Link to="/posts/ja">日本語記事</Link></li>
           </ul>
         </div>
       </div>
@@ -82,8 +130,98 @@ export default function HomePage() {
           <li>✅ 动态路由 (如 /products/[id])</li>
           <li>✅ 多层嵌套 (如 /users/[id]/edit)</li>
           <li>✅ 布局路由 (如 /admin/layout + 子路由)</li>
-          <li>✅ 捕获所有 (如 /docs/[...path])</li>
+          <li>✅ Splat 路由 (如 /docs/[...path], /files/[...segments])</li>
+          <li>✅ 路由组 (如 (auth)/login.tsx → /login)</li>
+          <li>✅ 可选参数 (如 -[category].tsx → /:category?)</li>
         </ul>
+      </div>
+
+      <div style={{ marginTop: '20px', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
+        <h3>🔧 buildReactRoutePath 功能展示</h3>
+        <p>
+          本示例展示了
+          <code>buildReactRoutePath</code>
+          {' '}
+          函数支持的所有路由解析功能：
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px', marginTop: '15px' }}>
+          <div>
+            <h4>🗂️ 路由组</h4>
+            <ul style={{ fontSize: '14px' }}>
+              <li>
+                <code>(auth)/login.tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/login</code>
+              </li>
+              <li>
+                <code>(dashboard)/stats.tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/stats</code>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>🌟 Splat 路由</h4>
+            <ul style={{ fontSize: '14px' }}>
+              <li>
+                <code>[...segments].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/*</code>
+              </li>
+              <li>
+                <code>[...path].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/*</code>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>🔗 动态参数</h4>
+            <ul style={{ fontSize: '14px' }}>
+              <li>
+                <code>[id].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/:id</code>
+              </li>
+              <li>
+                <code>[slug].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/:slug</code>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>❓ 可选参数</h4>
+            <ul style={{ fontSize: '14px' }}>
+              <li>
+                <code>-[category].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/:category?</code>
+              </li>
+              <li>
+                <code>-[lang].tsx</code>
+                {' '}
+                →
+                {' '}
+                <code>/:lang?</code>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   )

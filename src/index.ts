@@ -3,14 +3,9 @@
  * 实现基于文件系统的自动路由生成功能
  */
 
-// 导入类型定义
-import type { Plugin } from 'vite' // Vite 插件类型
-import type { UserOptions } from './types' // 用户选项类型
-
-// 导入常量
-import { MODULE_ID_VIRTUAL, ROUTE_BLOCK_ID_VIRTUAL, routeBlockQueryRE } from './constants'
-
-// 导入核心模块
+import type { Plugin } from 'vite'
+import type { UserOptions } from './types'
+import { MODULE_ID_VIRTUAL, ROUTE_BLOCK_ID_VIRTUAL } from './constants'
 import { PageContext } from './context' // 页面上下文类
 import { parsePageRequest } from './utils' // 请求解析工具
 
@@ -75,9 +70,9 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
       if (ctx.options.moduleIds.includes(id))
         return `${MODULE_ID_VIRTUAL}?id=${id}`
 
-      // 检查是否为路由块查询
-      if (routeBlockQueryRE.test(id))
-        return ROUTE_BLOCK_ID_VIRTUAL
+      // // 检查是否为路由块查询
+      // if (routeBlockQueryRE.test(id))
+      //   return ROUTE_BLOCK_ID_VIRTUAL
 
       return null // 不处理其他 ID
     },
@@ -109,24 +104,17 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
   }
 }
 
-// 导出同步索引解析器
 export { syncIndexResolver } from './options'
 
-// 导出类型定义
 export type {
   ReactRoute, // React 路由类型
 } from './resolvers'
 
-// 导出解析器
 export {
   reactResolver, // React 解析器
 } from './resolvers'
 
-// 导出所有类型定义
 export * from './types'
 
-// 导出页面上下文类
 export { PageContext }
-
-// 默认导出插件函数
 export default pagesPlugin

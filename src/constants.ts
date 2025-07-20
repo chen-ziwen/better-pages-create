@@ -1,9 +1,4 @@
 /**
- * 常量定义文件
- * 包含插件使用的各种常量、正则表达式和标识符
- */
-
-/**
  * 默认的模块 ID 列表
  * 这些 ID 用于在 Vite 中识别和导入生成的页面路由
  */
@@ -32,44 +27,27 @@ export const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:vite-plugin-pages/route-block'
 export const ROUTE_IMPORT_NAME = '__pages_import_$1__'
 
 /**
- * 路由块查询正则表达式
- * 用于匹配 Vue 单文件组件中的路由块查询参数
+ * 匹配格式 (fileName) 或 (fileName)_ 替换为 ""
  */
-export const routeBlockQueryRE = /\?vue&type=route/
+export const groupRE = [/^\([^)]+\)_?$/g, ''] as const
 
 /**
- * Next.js 风格的动态路由正则表达式
- * 匹配格式：[param] 或 [slug]
+ * 匹配格式 [...param] 替换为 *
  */
-export const dynamicRouteRE = /^\[(.+)\]$/
+export const splatRE = [/\[\.{3}\w+\]/g, '*'] as const
 
 /**
- * Next.js 风格的捕获所有路由正则表达式
- * 匹配格式：[...param] 或 [...slug]
+ * 匹配格式 [param] 替换为 :param
  */
-export const cacheAllRouteRE = /^\[\.{3}(.*)\]$/
+export const paramRE = [/\[([^\]]+)\]/g, ':$1'] as const
 
 /**
- * 替换动态路由的正则表达式
- * 用于提取动态路由参数名称
+ * 匹配格式 -en 或 -[...lang] 替换为 param? 和 :param?
  */
-export const replaceDynamicRouteRE = /^\[(?:\.{3})?(.*)\]$/
+export const optionalRE = [/^-(:?[\w-]+|\*)/, '$1?'] as const
 
 /**
- * Nuxt.js 风格的动态路由正则表达式
- * 匹配格式：_param 或 _slug
- */
-export const nuxtDynamicRouteRE = /^_(.*)$/
-
-/**
- * Nuxt.js 风格的捕获所有路由正则表达式
- * 匹配格式：_ (单个下划线)
- */
-export const nuxtCacheAllRouteRE = /^_$/
-
-/**
- * 计算斜杠数量的正则表达式
- * 用于统计路径中的斜杠字符
+ * 统计斜杆数量，用于排序文件深度
  */
 export const countSlashRE = /\//g
 

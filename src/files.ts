@@ -3,17 +3,10 @@
  * 负责页面文件的发现和目录解析
  */
 
-// 导入类型定义
-import type { PageOptions, ResolvedOptions } from './types' // 插件类型
-
-// 导入 Node.js 内置模块
-import { join } from 'node:path' // 路径拼接
-
-// 导入第三方工具
+import type { PageOptions, ResolvedOptions } from './types'
+import { join } from 'node:path'
 import { slash } from '@antfu/utils' // 路径斜杠标准化
 import { globSync } from 'tinyglobby' // 文件 glob 匹配
-
-// 导入工具函数
 import { extsToGlob } from './utils' // 扩展名转 glob 模式
 
 /**
@@ -25,7 +18,6 @@ import { extsToGlob } from './utils' // 扩展名转 glob 模式
  * @returns 解析后的页面目录选项数组
  */
 export function getPageDirs(PageOptions: PageOptions, root: string, exclude: string[]): PageOptions[] {
-  // 使用 glob 匹配目录
   const dirs = globSync(slash(PageOptions.dir), {
     ignore: exclude, // 忽略的模式
     onlyDirectories: true, // 只匹配目录

@@ -184,13 +184,6 @@ interface Options {
   importPath: 'absolute' | 'relative'
 
   /**
-   * 路由风格
-   * next: Next.js 风格，nuxt: Nuxt.js 风格，remix: Remix 风格
-   * @default 'next'
-   */
-  routeStyle: 'next' | 'nuxt' | 'remix'
-
-  /**
    * 生成的路由名称的分隔符
    * @default '-'
    */
@@ -250,7 +243,7 @@ export type UserOptions = Partial<Options>
  * 已解析选项接口
  * 继承 Options 接口，但排除一些已废弃的属性，并添加解析后的新属性
  */
-export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSquareBrackets' | 'nuxtStyle' | 'syncIndex' | 'moduleId'> {
+export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSquareBrackets' | 'syncIndex' | 'moduleId'> {
   /**
    * 解析为 Vite 配置中的 `root` 值
    * 项目的根目录路径

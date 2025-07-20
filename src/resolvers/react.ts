@@ -1,29 +1,17 @@
-/**
- * React 解析器模块
- * 专门处理 React 项目的路由生成和解析
- */
-
-// 导入类型定义
-import type { PageContext } from '../context' // 页面上下文类型
-import type { Optional, PageResolver, ResolvedOptions } from '../types' // 工具类型
-
-// 导入功能模块
-import { generateClientCode } from '../stringify' // 客户端代码生成
+import type { PageContext } from '../context'
+import type { Optional, PageResolver, ResolvedOptions } from '../types'
+import { generateClientCode } from '../stringify'
 import {
-  buildReactRemixRoutePath, // Remix 路由路径构建
   buildReactRoutePath, // React 路由路径构建
-  countSlash, // 斜杠计数
+  countSlash, // 斜杠计数 用来进行文件深度排序
   normalizeCase, // 大小写标准化
 } from '../utils'
 
-/**
- * React 路由基础接口
- * 定义 React 路由的基本结构
- */
 export interface ReactRouteBase {
   caseSensitive?: boolean // 是否大小写敏感
   children?: ReactRouteBase[] // 子路由数组
   element?: string // 组件元素
+  Component?: string // 组件实例
   index?: boolean // 是否为索引路由
   path?: string // 路由路径
   loader?: () => void // 数据加载函数
@@ -78,8 +66,7 @@ function prepareRoutes(
  * @returns React 路由数组
  */
 async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
-  const { routeStyle, caseSensitive, importPath } = ctx.options
-  const nuxtStyle = routeStyle === 'nuxt' // 是否使用 Nuxt 风格
+  const { caseSensitive, importPath } = ctx.options
 
   // 获取所有页面路由并按路径深度排序（用于热模块替换）
   const pageRoutes = [...ctx.pageRouteMap.values()]
@@ -117,11 +104,7 @@ async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
         route.path = '/' // 索引路由使用根路径
       }
       else if (!isIndexRoute) {
-        // 根据路由风格构建路径
-        if (routeStyle === 'remix')
-          route.path = buildReactRemixRoutePath(node)
-        else
-          route.path = buildReactRoutePath(node, nuxtStyle)
+        route.path = buildReactRoutePath(node)
       }
 
       // 查找父路由
