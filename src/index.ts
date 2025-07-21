@@ -34,9 +34,9 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
         userOptions.resolver = 'react' // 自动设置为 React 解析器
       }
 
-      // 创建页面上下文实例
       ctx = new PageContext(userOptions, config.root)
-      ctx.setLogger(config.logger) // 设置日志记录器
+      ctx.setLogger(config.logger)
+
       await ctx.searchGlob() // 搜索页面文件
     },
     /**
@@ -107,11 +107,11 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
 export { syncIndexResolver } from './options'
 
 export type {
-  ReactRoute, // React 路由类型
+  ReactRoute,
 } from './resolvers'
 
 export {
-  reactResolver, // React 解析器
+  reactResolver,
 } from './resolvers'
 
 export * from './types'

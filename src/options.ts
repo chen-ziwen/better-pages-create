@@ -90,9 +90,10 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
   const {
     dirs = ['src/pages'], // 页面目录，默认为 'src/pages'
     routeBlockLang = 'json5', // 路由块语言，默认为 'json5'
-    exclude = ['node_modules', '.git', '**/__*__/**'], // 排除的文件/目录模式
+    exclude = ['**/components/**', '**/modules/**'], // 排除的文件/目录模式
     caseSensitive = false, // 路由是否大小写敏感，默认为 false
     routeNameSeparator = '-', // 路由名称分隔符，默认为 '-'
+    childFullPath = false, // 子路径是否为完整路径，默认为 false
     extendRoute, // 扩展路由的函数
     onRoutesGenerated, // 路由生成后的回调函数
     onClientGenerated, // 客户端代码生成后的回调函数
@@ -130,6 +131,7 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     routeBlockLang, // 路由块语言（json5/json/yaml/yml）
     moduleIds, // 模块 ID 列表
     root, // 项目根目录
+    childFullPath, // 子路径是否为完整路径
     extensions, // 支持的文件扩展名列表
     importMode, // 导入模式（同步/异步）
     importPath, // 导入路径类型（绝对/相对）

@@ -9,12 +9,10 @@ export default defineConfig({
     pagesPlugin({
       // 指定页面目录
       dirs: ['src/pages'],
-      // 使用 React 解析器
-      resolver: 'react',
-      // 路由风格，支持 'next'、'nuxt'、'remix'
-      routeStyle: 'next',
       // 支持的文件扩展名
       extensions: ['tsx', 'jsx', 'ts', 'js'],
+      // 子路径是否为完整路径
+      childFullPath: true,
       // 导入模式：同步导入首页，异步导入其他页面
       importMode: (filepath) => {
         // 首页同步导入，其他页面异步导入以支持代码分割

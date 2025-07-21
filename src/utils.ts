@@ -5,7 +5,7 @@
 
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ResolvedOptions } from './types'
-import { resolve, win32 } from 'node:path' // 路径处理工具
+import { resolve } from 'node:path' // 路径处理工具
 import { URLSearchParams } from 'node:url' // URL 查询参数解析
 import { slash } from '@antfu/utils' // 路径斜杠标准化
 import Debug from 'debug' // 调试工具
@@ -16,7 +16,6 @@ import {
   MODULE_ID_VIRTUAL, // 虚拟模块 ID
   optionalRE,
   paramRE,
-  replaceIndexRE, // 替换 index 正则
   splatRE,
 } from './constants'
 
@@ -126,15 +125,19 @@ export function normalizeCase(str: string, caseSensitive: boolean) {
   return str // 敏感时保持原样
 }
 
-// /**
-//  * 构建 React 路由路径
-//  * 将文件名转换为 React Router 可识别的路由路径
-//  * @param name - 文件名
-//  * @returns React Router 路由路径
-//  */
+/**
+ * 构建 React 路由路径
+ * 将文件名转换为 React Router 可识别的路由路径
+ * @param name - 文件名
+ * @returns React Router 路由路径
+ */
 export function buildReactRoutePath(
   name: string,
 ) {
+  if (name === 'root') {
+    return '/'
+  }
+
   return name
     // 去除路由组 去除路由组 (fileName) 或 (fileName)_
     .replace(...groupRE)
@@ -147,121 +150,6 @@ export function buildReactRoutePath(
     // -[lang] 或 -en 转换为 :lang? 和 :en?
     .map(node => node.replace(...optionalRE))
     .join('/')
-}
-
-/**
- * 构建 React Remix 路由路径
- * 基于 Remix 的路由约定将文件名转换为路由路径
- * 参考：https://github.dev/remix-run/remix/blob/264e3f8884c5cafd8d06acc3e01153b376745b7c/packages/remix-dev/config/routesConvention.ts#L105
- * @param node - 文件名节点
- * @returns Remix 风格的路由路径
- */
-export function buildReactRemixRoutePath(node: string): string | undefined {
-  // 转义序列的开始和结束字符
-  const escapeStart = '['
-  const escapeEnd = ']'
-  let result = '' // 最终的路由路径结果
-  let rawSegmentBuffer = '' // 原始段缓冲区
-
-  let inEscapeSequence = 0 // 是否在转义序列中
-  let skipSegment = false // 是否跳过当前段
-
-  // 逐字符处理文件名
-  for (let i = 0; i < node.length; i++) {
-    const char = node.charAt(i)
-    const lastChar = i > 0 ? node.charAt(i - 1) : undefined
-    const nextChar = i < node.length - 1 ? node.charAt(i + 1) : undefined
-
-    /**
-     * 检查是否为新的转义序列开始
-     * 条件：不在转义序列中 && 当前字符是 '[' && 前一个字符不是 '['
-     */
-    function isNewEscapeSequence() {
-      return (
-        !inEscapeSequence && char === escapeStart && lastChar !== escapeStart
-      )
-    }
-
-    /**
-     * 检查是否为转义序列结束
-     * 条件：在转义序列中 && 当前字符是 ']' && 下一个字符不是 ']'
-     */
-    function isCloseEscapeSequence() {
-      return inEscapeSequence && char === escapeEnd && nextChar !== escapeEnd
-    }
-
-    /**
-     * 检查是否为布局段的开始
-     * 条件：当前字符是 '_' && 下一个字符是 '_' && 缓冲区为空
-     */
-    function isStartOfLayoutSegment() {
-      return char === '_' && nextChar === '_' && !rawSegmentBuffer
-    }
-
-    // 如果正在跳过段，检查是否遇到段分隔符
-    if (skipSegment) {
-      if (char === '/' || char === '.' || char === win32.sep)
-        skipSegment = false // 遇到分隔符时停止跳过
-
-      continue
-    }
-
-    // 处理转义序列开始
-    if (isNewEscapeSequence()) {
-      inEscapeSequence++
-      continue
-    }
-
-    // 处理转义序列结束
-    if (isCloseEscapeSequence()) {
-      inEscapeSequence--
-      continue
-    }
-
-    // 在转义序列中，直接添加字符到结果
-    if (inEscapeSequence) {
-      result += char
-      continue
-    }
-
-    // 处理路径分隔符
-    if (char === '/' || char === win32.sep || char === '.') {
-      // 如果当前段是 'index' 且结果以 'index' 结尾，则移除 index
-      if (rawSegmentBuffer === 'index' && result.endsWith('index'))
-        result = result.replace(replaceIndexRE, '')
-      else result += '/' // 否则添加路径分隔符
-
-      rawSegmentBuffer = '' // 清空段缓冲区
-      continue
-    }
-
-    // 处理布局段开始（以 __ 开头的段）
-    if (isStartOfLayoutSegment()) {
-      skipSegment = true // 跳过布局段
-      continue
-    }
-
-    // 将字符添加到段缓冲区
-    rawSegmentBuffer += char
-
-    // 处理 Remix 的动态路由标记 '$'
-    if (char === '$') {
-      // 如果是最后一个字符，表示捕获所有路由，使用 '*'
-      // 否则表示动态参数，使用 ':'
-      result += typeof nextChar === 'undefined' ? '*' : ':'
-      continue
-    }
-
-    // 将字符添加到结果中
-    result += char
-  }
-
-  // 处理结尾的 index 段
-  if (rawSegmentBuffer === 'index' && result.endsWith('index'))
-    result = result.replace(replaceIndexRE, '')
-
-  // 返回结果，如果为空则返回 undefined
-  return result || undefined
 }
 
 /**
@@ -280,3 +168,50 @@ export function parsePageRequest(id: string) {
     pageId, // 页面 ID
   }
 }
+
+/**
+ * 判断是否为路由组
+ * @param name - 文件名
+ * @returns 是否为路由组
+ */
+export function isRouteGroup(name: string) {
+  const lastName = name.split('_').at(-1)
+
+  return lastName?.startsWith('(') && lastName?.endsWith(')')
+}
+
+// export function buildRouteTree(routes: RouteRecordNormalized[], ctx: PageContext): RouteRecordNormalized[] {
+//   const { childFullPath } = ctx.options
+
+//   return routes.map((route) => {
+//     if (route.children && route.children.length > 0) {
+//       route.children = route.children.map((child) => {
+//         if (childFullPath) {
+//           // 拼接父路由路径
+//           const parentPath = route.path === '/' ? '' : route.path
+//           child.path = `${parentPath}${child.path}`
+//         }
+//         return child
+//       })
+
+//       // 递归处理嵌套子路由
+//       route.children = buildRouteTree(route.children, ctx)
+//     }
+//     return route
+//   })
+// }
+
+// export function buildFullPath(parentPath: string, childPath: string): string {
+//   // 处理根路径
+//   if (parentPath === '/') {
+//     return childPath.startsWith('/') ? childPath : `/${childPath}`
+//   }
+
+//   // 处理子路径已经是绝对路径的情况
+//   if (childPath.startsWith('/')) {
+//     return childPath
+//   }
+
+//   // 拼接父子路径
+//   return `${parentPath}/${childPath}`.replace(/\/+/g, '/')
+// }

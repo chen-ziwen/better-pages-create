@@ -14,8 +14,6 @@ export interface ReactRouteBase {
   Component?: string // 组件实例
   index?: boolean // 是否为索引路由
   path?: string // 路由路径
-  loader?: () => void // 数据加载函数
-  handle?: any
   rawRoute: string // 原始路由字符串
 }
 

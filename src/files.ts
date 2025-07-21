@@ -45,11 +45,12 @@ export function getPageDirs(PageOptions: PageOptions, root: string, exclude: str
  */
 export function getPageFiles(path: string, options: ResolvedOptions, pageOptions?: PageOptions): string[] {
   const {
-    exclude, // 排除模式
-    extensions, // 支持的扩展名
+    exclude,
+    extensions,
   } = options
 
-  const ext = extsToGlob(extensions) // 将扩展名转换为 glob 模式
+  // 将扩展名转换为 glob 模式
+  const ext = extsToGlob(extensions)
   // 使用自定义文件模式或默认模式
   const pattern = pageOptions?.filePattern ?? `**/*.${ext}`
 

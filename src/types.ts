@@ -172,6 +172,12 @@ interface Options {
   exclude: string[]
 
   /**
+   * 子路径是否为完整路径
+   * @default false
+   */
+  childFullPath: boolean
+
+  /**
    * 直接导入路由或作为异步组件导入
    * @default 'root index file => "sync", others => "async"'
    */
