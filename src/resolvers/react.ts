@@ -1,6 +1,14 @@
 import type { PageContext } from '../context'
-import type { Optional, PageResolver, ResolvedOptions } from '../types'
+import type { Optional, PageResolver } from '../types'
 import { generateClientCode } from '../stringify'
+import {
+  transformPageGlobToRouterFile,
+  transformRouterEntriesToTrees,
+  transformRouterFilesToMaps,
+  transformRouterMapsToEntries,
+  // transformRouterTreesToRoutes,
+} from '../transform'
+import { countSlash } from '../utils'
 
 export interface ReactRouteBase {
   caseSensitive?: boolean // 是否大小写敏感
@@ -28,29 +36,29 @@ export interface ReactRoute extends Omit<Optional<ReactRouteBase, 'rawRoute' | '
  * @param parent - 父路由（可选）
  * @returns 处理后的路由数组
  */
-function prepareRoutes(
-  routes: ReactRoute[],
-  options: ResolvedOptions,
-  parent?: ReactRoute,
-) {
-  for (const route of routes) {
-    // 如果有父路由，移除子路由路径开头的斜杠
-    if (parent)
-      route.path = route.path?.replace(/^\//, '')
+// function prepareRoutes(
+//   routes: ReactRoute[],
+//   options: ResolvedOptions,
+//   parent?: ReactRoute,
+// ) {
+//   for (const route of routes) {
+//     // 如果有父路由，移除子路由路径开头的斜杠
+//     if (parent)
+//       route.path = route.path?.replace(/^\//, '')
 
-    // 递归处理子路由
-    if (route.children)
-      route.children = prepareRoutes(route.children, options, route)
+//     // 递归处理子路由
+//     if (route.children)
+//       route.children = prepareRoutes(route.children, options, route)
 
-    // 删除原始路由字段（仅用于内部处理）
-    delete route.rawRoute
+//     // 删除原始路由字段（仅用于内部处理）
+//     delete route.rawRoute
 
-    // 应用用户自定义的路由扩展函数
-    Object.assign(route, options.extendRoute?.(route, parent) || {})
-  }
+//     // 应用用户自定义的路由扩展函数
+//     Object.assign(route, options.extendRoute?.(route, parent) || {})
+//   }
 
-  return routes
-}
+//   return routes
+// }
 
 /**
  * 计算 React 路由
@@ -62,24 +70,39 @@ async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
   // const { caseSensitive, importPath } = ctx.options
 
   // 获取所有页面路由并按路径深度排序（用于热模块替换）
-  // const pageRoutes = [...ctx.pageRouteMap.values()].sort((a, b) => countSlash(a.route) - countSlash(b.route))
+  const pageRoutes = [...ctx.pageRouteMap.values()].sort((a, b) => countSlash(a.route) - countSlash(b.route))
 
-  const routes: ReactRouteBase[] = [] // 最终的路由数组
+  const files = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
 
-  // const file = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
+  const maps = transformRouterFilesToMaps(files, ctx.options)
 
-  // const map = transformRouterFilesToMaps(file, ctx.options)
+  const entries = transformRouterMapsToEntries(maps)
 
-  // console.log('file ===>', file)
-  // console.log('map ===>', map)
+  const trees = transformRouterEntriesToTrees(entries, maps, files)
 
-  // 准备最终路由（排序、处理动态路由等）
-  let finalRoutes = prepareRoutes(routes, ctx.options)
+  // const rt = transformRouterTreesToRoutes(trees, ctx.options)
 
-  // 调用用户自定义的路由生成后处理函数
-  finalRoutes = (await ctx.options.onRoutesGenerated?.(finalRoutes)) || finalRoutes
+  // console.log('files ===>', files)
 
-  return finalRoutes
+  // console.log('maps ===>', maps)
+
+  // console.log('entries ===>', entries)
+
+  // console.log('trees ===>', trees)
+
+  // console.log('routes ===>', rt)
+
+  // const routes: ReactRouteBase[] = [] // 最终的路由数组
+
+  // // 准备最终路由（排序、处理动态路由等）
+  // let finalRoutes = prepareRoutes(routes, ctx.options)
+
+  // // 调用用户自定义的路由生成后处理函数
+  // finalRoutes = (await ctx.options.onRoutesGenerated?.(finalRoutes)) || finalRoutes
+
+  // return finalRoutes
+
+  return trees
 }
 
 /**

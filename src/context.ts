@@ -62,8 +62,9 @@ export class PageContext {
    * @param server - Vite 开发服务器实例
    */
   setupViteServer(server: ViteDevServer) {
-    if (this.mServer === server)
+    if (this.mServer === server) {
       return // 如果是同一个服务器实例，直接返回
+    }
 
     this.mServer = server
     this.setupWatcher(server.watcher) // 设置文件监听器
@@ -76,38 +77,35 @@ export class PageContext {
    */
   setupWatcher(watcher: ViteDevServer['watcher']) {
     // 监听文件删除事件
-    watcher
-      .on('unlink', async (path) => {
-        path = slash(path) // 标准化路径
-        if (!isTarget(path, this.options)) // 检查是否为目标文件
-          return
-        await this.removePage(path) // 移除页面
-        this.onUpdate() // 触发更新
-      })
+    watcher.on('unlink', async (path) => {
+      path = slash(path) // 标准化路径
+      if (!isTarget(path, this.options)) // 检查是否为目标文件
+        return
+      await this.removePage(path) // 移除页面
+      this.onUpdate() // 触发更新
+    })
 
     // 监听文件添加事件
-    watcher
-      .on('add', async (path) => {
-        path = slash(path) // 标准化路径
-        if (!isTarget(path, this.options)) // 检查是否为目标文件
-          return
+    watcher.on('add', async (path) => {
+      path = slash(path) // 标准化路径
+      if (!isTarget(path, this.options)) // 检查是否为目标文件
+        return
         // 找到对应的页面目录配置
-        const page = this.options.dirs.find(i => path.startsWith(slash(resolve(this.root, i.dir))))!
-        await this.addPage(path, page) // 添加页面
-        this.onUpdate() // 触发更新
-      })
+      const page = this.options.dirs.find(i => path.startsWith(slash(resolve(this.root, i.dir))))!
+      await this.addPage(path, page) // 添加页面
+      this.onUpdate() // 触发更新
+    })
 
     // 监听文件修改事件
-    watcher
-      .on('change', async (path) => {
-        path = slash(path) // 标准化路径
-        if (!isTarget(path, this.options)) // 检查是否为目标文件
-          return
-        const page = this.mPageRouteMap.get(path) // 获取页面信息
-        if (page)
-          // 调用解析器的热模块替换处理函数
-          await this.options.resolver.hmr?.changed?.(this, path)
-      })
+    watcher.on('change', async (path) => {
+      path = slash(path) // 标准化路径
+      if (!isTarget(path, this.options)) // 检查是否为目标文件
+        return
+      const page = this.mPageRouteMap.get(path) // 获取页面信息
+      if (page)
+      // 调用解析器的热模块替换处理函数
+        await this.options.resolver.hmr?.changed?.(this, path)
+    })
   }
 
   /**
@@ -163,8 +161,9 @@ export class PageContext {
    * 当页面发生变化时，使相关模块失效并触发页面重新加载
    */
   onUpdate() {
-    if (!this.mServer)
+    if (!this.mServer) {
       return // 如果没有开发服务器，直接返回
+    }
 
     invalidatePagesModule(this.mServer) // 使页面模块失效
     debug.hmr('Reload generated pages.')
@@ -192,10 +191,10 @@ export class PageContext {
     const pageDirFiles = this.options.dirs.map((page) => {
       const pagesDirPath = slash(resolve(this.options.root, page.dir)) // 页面目录绝对路径
       const files = getPageFiles(pagesDirPath, this.options, page) // 获取页面文件
-      debug.search(page.dir, files) // 调试输出
+      debug.search(page.dir, files)
       return {
-        ...page, // 页面配置
-        files: files.map(file => slash(file)), // 标准化文件路径
+        ...page,
+        files: files.map(file => slash(file)),
       }
     })
 
@@ -204,7 +203,7 @@ export class PageContext {
       await this.addPage(page.files, page)
     }
 
-    debug.cache(this.pageRouteMap) // 调试输出路由映射表
+    debug.cache(this.pageRouteMap)
   }
 
   /**

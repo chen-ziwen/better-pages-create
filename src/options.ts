@@ -93,6 +93,8 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     extendRoute, // 扩展路由的函数
     onRoutesGenerated, // 路由生成后的回调函数
     onClientGenerated, // 客户端代码生成后的回调函数
+    routeNameTransformer = name => name,
+    routePathTransformer = (_transformedName, path) => path,
   } = userOptions
 
   const root = viteRoot || slash(process.cwd())
@@ -125,10 +127,12 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     caseSensitive, // 路由大小写敏感性
     resolver, // 页面解析器实例
     extensionsRE, // 文件扩展名匹配正则表达式
+    routeNameSeparator, // 路由名称分隔符
+    routeNameTransformer, // 路由名称转换器
+    routePathTransformer, // 路由路径转换器
     extendRoute, // 扩展路由的函数
     onRoutesGenerated, // 路由生成后的回调函数
     onClientGenerated, // 客户端代码生成后的回调函数
-    routeNameSeparator, // 路由名称分隔符
   }
 
   return resolvedOptions

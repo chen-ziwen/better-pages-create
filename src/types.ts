@@ -5,6 +5,7 @@
 
 // 导入外部类型
 import type { Awaitable } from '@antfu/utils' // 可等待类型（Promise 或同步值）
+import type { RouteObject } from 'react-router-dom'
 import type { PageContext } from './context' // 页面上下文类型
 import type { ReactRoute } from './resolvers' // React 路由类型
 
@@ -196,7 +197,7 @@ interface Options {
 
   /**
    * 生成的路由名称的分隔符
-   * @default '-'
+   * @default '_'
    */
   routeNameSeparator: string
 
@@ -226,6 +227,18 @@ interface Options {
   resolver: InternalPageResolvers | PageResolver
 
   /**
+   * 路由名称转换器
+   * 允许用户自定义修改生成的路由名称
+   */
+  routeNameTransformer: (name: string) => string
+
+  /**
+   * 路由路径转换器
+   * 允许用户自定义修改生成的路由路径
+   */
+  routePathTransformer: (transformedName: string, path: string | null) => string | null
+
+  /**
    * 扩展路由记录的函数
    * 允许用户自定义修改生成的路由对象
    */
@@ -250,49 +263,24 @@ interface Options {
  */
 export type UserOptions = Partial<Options>
 
+export type RouterNamePathMap = Map<string, string | null>
+
+export type RouterNamePathEntry = [string, string | null]
+
 /**
  * 已解析选项接口
  * 继承 Options 接口，但排除一些已废弃的属性，并添加解析后的新属性
  */
 export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSquareBrackets' | 'syncIndex' | 'moduleId'> {
-  /**
-   * 解析为 Vite 配置中的 `root` 值
-   * 项目的根目录路径
-   * @default config.root
-   */
   root: string
-
-  /**
-   * 已解析的页面目录列表
-   * 将用户配置转换为标准的 PageOptions 对象数组
-   */
   dirs: PageOptions[]
-
-  /**
-   * 已解析的页面解析器
-   * 实际使用的解析器实例
-   */
   resolver: PageResolver
-
-  /**
-   * 项目别名
-   */
   alias: Record<string, string>
-
-  /**
-   * 匹配文件扩展名的正则表达式
-   * 根据 extensions 数组生成的正则表达式
-   */
   extensionsRE: RegExp
-
-  /**
-   * 路由导入的模块 ID 列表
-   * 支持多个模块 ID，而不是单个 moduleId
-   */
   moduleIds: string[]
 }
 
-export interface BetterRouterFile {
+export interface RouterFile {
   componentName: string
   fullPath: string
   glob: string
@@ -302,7 +290,7 @@ export interface BetterRouterFile {
   routePath: string
 }
 
-export interface BetterRouterOption {
+export interface RouterOption {
   alias: Record<string, string>
   cwd: string
   log: boolean
@@ -311,4 +299,32 @@ export interface BetterRouterOption {
   pagePatterns: string[]
   routeNameTransformer: (routeName: string) => string
   routePathTransformer: (transformedName: string, path: string | null) => string | null
+}
+
+export interface RouterTree {
+  children?: RouterTree[]
+  fullPath: string | null
+  matchedFiles: (string | null)[]
+  routeName: string
+  routePath: string | null
+}
+
+export interface CustomRouteConfig {
+  entries: RouterNamePathEntry[]
+  firstLevelRoutes: string[]
+  lastLevelRoutes: string[]
+}
+
+export type RouteMeta = Record<string | number, unknown>
+
+/** elegant const route */
+export type ConstRoute = Omit<RouteObject, 'children' | 'id' | 'path'> & {
+  children?: ConstRoute[]
+  matchedFiles: (string | null)[]
+  name: string
+  path?: string | null
+}
+
+export interface RouteConstExport {
+  generatedRoutes: ConstRoute[]
 }
