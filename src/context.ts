@@ -19,6 +19,8 @@ import { debug, invalidatePagesModule, isTarget } from './utils' // 调试和工
 export interface PageRoute {
   path: string // 文件系统路径
   route: string // 路由路径
+  suffix: string // 文件扩展名
+  pageDir: string // 页面目录
 }
 
 /**
@@ -112,24 +114,33 @@ export class PageContext {
    * 添加页面
    * 将页面文件添加到路由映射表中
    * @param path - 页面文件路径（可以是单个路径或路径数组）
-   * @param pageDir - 页面目录配置
+   * @param pageDir - 页面目录配置layout
    */
   async addPage(path: string | string[], pageDir: PageOptions) {
     debug.pages('add', path)
+
     for (const p of toArray(path)) {
-      const pageDirPath = slash(resolve(this.root, pageDir.dir)) // 页面目录的绝对路径
+      // 页面目录的绝对路径
+      const pageDirPath = slash(resolve(this.root, pageDir.dir))
+
       // 查找匹配的文件扩展名
       const extension = this.options.extensions.find(ext => p.endsWith(`.${ext}`))
-      if (!extension)
-        continue // 如果扩展名不匹配，跳过
+
+      if (!extension) {
+        continue
+      }
 
       // 生成路由路径：基础路由 + 相对路径（去除扩展名）
       const route = slash(join(pageDir.baseRoute, p.replace(`${pageDirPath}/`, '').replace(`.${extension}`, '')))
+
       // 添加到路由映射表
       this.mPageRouteMap.set(p, {
-        path: p, // 文件路径
-        route, // 路由路径
+        path: p,
+        route,
+        suffix: extension,
+        pageDir: pageDir.dir,
       })
+
       // 调用解析器的热模块替换添加处理函数
       await this.options.resolver.hmr?.added?.(this, p)
     }
@@ -189,8 +200,9 @@ export class PageContext {
     })
 
     // 将所有找到的页面文件添加到路由映射表
-    for (const page of pageDirFiles)
+    for (const page of pageDirFiles) {
       await this.addPage(page.files, page)
+    }
 
     debug.cache(this.pageRouteMap) // 调试输出路由映射表
   }

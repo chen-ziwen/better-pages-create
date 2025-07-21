@@ -11,12 +11,9 @@ import { slash } from '@antfu/utils' // 路径斜杠标准化
 import Debug from 'debug' // 调试工具
 import micromatch from 'micromatch' // 文件匹配工具
 import {
-  countSlashRE, // 计算斜杠正则
-  groupRE,
+  COUNTSLASH_RE, // 计算斜杠正则
   MODULE_ID_VIRTUAL, // 虚拟模块 ID
-  optionalRE,
-  paramRE,
-  splatRE,
+  PAGE_DEGREE_SPLITTER,
 } from './constants'
 
 /**
@@ -51,7 +48,7 @@ export function extsToGlob(extensions: string[]) {
  * @returns 斜杠的数量
  */
 export function countSlash(value: string) {
-  return (value.match(countSlashRE) || []).length
+  return (value.match(COUNTSLASH_RE) || []).length
 }
 
 /**
@@ -126,33 +123,6 @@ export function normalizeCase(str: string, caseSensitive: boolean) {
 }
 
 /**
- * 构建 React 路由路径
- * 将文件名转换为 React Router 可识别的路由路径
- * @param name - 文件名
- * @returns React Router 路由路径
- */
-export function buildReactRoutePath(
-  name: string,
-) {
-  if (name === 'root') {
-    return '/'
-  }
-
-  return name
-    // 去除路由组 去除路由组 (fileName) 或 (fileName)_
-    .replace(...groupRE)
-    // 替换 [...param] 为 *
-    .replace(...splatRE)
-    // 替换 [param] 为 :param
-    .replace(...paramRE)
-    .split('/')
-    .filter(Boolean)
-    // -[lang] 或 -en 转换为 :lang? 和 :en?
-    .map(node => node.replace(...optionalRE))
-    .join('/')
-}
-
-/**
  * 解析页面请求
  * 从请求 ID 中提取模块 ID、查询参数和页面 ID
  * @param id - 请求 ID 字符串
@@ -175,43 +145,21 @@ export function parsePageRequest(id: string) {
  * @returns 是否为路由组
  */
 export function isRouteGroup(name: string) {
-  const lastName = name.split('_').at(-1)
+  const lastName = name.split(PAGE_DEGREE_SPLITTER).at(-1)
 
   return lastName?.startsWith('(') && lastName?.endsWith(')')
 }
 
-// export function buildRouteTree(routes: RouteRecordNormalized[], ctx: PageContext): RouteRecordNormalized[] {
-//   const { childFullPath } = ctx.options
+export function splitRouterName(name: string) {
+  const names = name.split(PAGE_DEGREE_SPLITTER)
 
-//   return routes.map((route) => {
-//     if (route.children && route.children.length > 0) {
-//       route.children = route.children.map((child) => {
-//         if (childFullPath) {
-//           // 拼接父路由路径
-//           const parentPath = route.path === '/' ? '' : route.path
-//           child.path = `${parentPath}${child.path}`
-//         }
-//         return child
-//       })
+  return names.reduce((prev, cur) => {
+    const last = prev[prev.length - 1]
 
-//       // 递归处理嵌套子路由
-//       route.children = buildRouteTree(route.children, ctx)
-//     }
-//     return route
-//   })
-// }
+    const next = last ? `${last}${PAGE_DEGREE_SPLITTER}${cur}` : cur
 
-// export function buildFullPath(parentPath: string, childPath: string): string {
-//   // 处理根路径
-//   if (parentPath === '/') {
-//     return childPath.startsWith('/') ? childPath : `/${childPath}`
-//   }
+    prev.push(next)
 
-//   // 处理子路径已经是绝对路径的情况
-//   if (childPath.startsWith('/')) {
-//     return childPath
-//   }
-
-//   // 拼接父子路径
-//   return `${parentPath}/${childPath}`.replace(/\/+/g, '/')
-// }
+    return prev
+  }, [] as string[])
+}

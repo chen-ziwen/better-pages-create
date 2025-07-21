@@ -167,15 +167,20 @@ interface Options {
   extensions: string[]
 
   /**
+   * 项目别名
+   */
+  alias: Record<string, string>
+
+  /**
    * 解析页面时要排除的路径 glob 模式列表
    */
   exclude: string[]
 
   /**
-   * 子路径是否为完整路径
+   * 是否为完整路径
    * @default false
    */
-  childFullPath: boolean
+  fullPath: boolean
 
   /**
    * 直接导入路由或作为异步组件导入
@@ -270,6 +275,11 @@ export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSqua
   resolver: PageResolver
 
   /**
+   * 项目别名
+   */
+  alias: Record<string, string>
+
+  /**
    * 匹配文件扩展名的正则表达式
    * 根据 extensions 数组生成的正则表达式
    */
@@ -280,4 +290,25 @@ export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSqua
    * 支持多个模块 ID，而不是单个 moduleId
    */
   moduleIds: string[]
+}
+
+export interface BetterRouterFile {
+  componentName: string
+  fullPath: string
+  glob: string
+  importAliasPath: string
+  importPath: string | null
+  routeName: string
+  routePath: string
+}
+
+export interface BetterRouterOption {
+  alias: Record<string, string>
+  cwd: string
+  log: boolean
+  pageDir: string
+  pageExcludePatterns: string[]
+  pagePatterns: string[]
+  routeNameTransformer: (routeName: string) => string
+  routePathTransformer: (transformedName: string, path: string | null) => string | null
 }

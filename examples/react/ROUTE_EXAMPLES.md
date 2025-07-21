@@ -133,28 +133,28 @@ src/pages/
 ```typescript
 // 正则表达式：/^\([^)]+\)_?$/g
 // 匹配 (fileName) 或 (fileName)_ 并替换为空字符串
-export const groupRE = [/^\([^)]+\)_?$/g, ''] as const
+export const GROUP_RE = [/^\([^)]+\)_?$/g, ''] as const
 ```
 
 ### 2. Splat 路由实现
 ```typescript
 // 正则表达式：/\[\.{3}\w+\]/g
 // 匹配 [...param] 并替换为 *
-export const splatRE = [/\[\.{3}\w+\]/g, '*'] as const
+export const SPLAT_RE = [/\[\.{3}\w+\]/g, '*'] as const
 ```
 
 ### 3. 动态参数实现
 ```typescript
 // 正则表达式：/\[([^\]]+)\]/g
 // 匹配 [param] 并替换为 :param
-export const paramRE = [/\[([^\]]+)\]/g, ':$1'] as const
+export const PARAM_RE = [/\[([^\]]+)\]/g, ':$1'] as const
 ```
 
 ### 4. 可选参数实现
 ```typescript
 // 正则表达式：/^-(:?[\w-]+|\*)/
 // 匹配 -[param] 或 -param 并替换为 param? 或 :param?
-export const optionalRE = [/^-(:?[\w-]+|\*)/, '$1?'] as const
+export const OPTIONAL_RE = [/^-(:?[\w-]+|\*)/, '$1?'] as const
 ```
 
 ## 🚀 如何测试

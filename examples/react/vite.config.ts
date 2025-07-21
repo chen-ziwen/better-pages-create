@@ -10,9 +10,9 @@ export default defineConfig({
       // 指定页面目录
       dirs: ['src/pages'],
       // 支持的文件扩展名
-      extensions: ['tsx', 'jsx', 'ts', 'js'],
-      // 子路径是否为完整路径
-      childFullPath: true,
+      extensions: ['tsx', 'jsx'],
+      // 是否为完整路径
+      fullPath: true,
       // 导入模式：同步导入首页，异步导入其他页面
       importMode: (filepath) => {
         // 首页同步导入，其他页面异步导入以支持代码分割

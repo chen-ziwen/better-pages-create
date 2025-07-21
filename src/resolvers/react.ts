@@ -1,11 +1,6 @@
 import type { PageContext } from '../context'
 import type { Optional, PageResolver, ResolvedOptions } from '../types'
 import { generateClientCode } from '../stringify'
-import {
-  buildReactRoutePath, // React 路由路径构建
-  countSlash, // 斜杠计数 用来进行文件深度排序
-  normalizeCase, // 大小写标准化
-} from '../utils'
 
 export interface ReactRouteBase {
   caseSensitive?: boolean // 是否大小写敏感
@@ -64,68 +59,19 @@ function prepareRoutes(
  * @returns React 路由数组
  */
 async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
-  const { caseSensitive, importPath } = ctx.options
+  // const { caseSensitive, importPath } = ctx.options
 
   // 获取所有页面路由并按路径深度排序（用于热模块替换）
-  const pageRoutes = [...ctx.pageRouteMap.values()]
-    .sort((a, b) => countSlash(a.route) - countSlash(b.route))
+  // const pageRoutes = [...ctx.pageRouteMap.values()].sort((a, b) => countSlash(a.route) - countSlash(b.route))
 
   const routes: ReactRouteBase[] = [] // 最终的路由数组
 
-  // 遍历每个页面，构建路由树
-  pageRoutes.forEach((page) => {
-    const pathNodes = page.route.split('/') // 将路由路径分割为节点
-    // 根据导入路径类型确定组件路径
-    const element = importPath === 'relative' ? page.path.replace(ctx.root, '') : page.path
-    let parentRoutes = routes // 当前层级的路由数组
+  // const file = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
 
-    // 遍历路径节点，构建嵌套路由结构
-    for (let i = 0; i < pathNodes.length; i++) {
-      const node = pathNodes[i]
+  // const map = transformRouterFilesToMaps(file, ctx.options)
 
-      // 创建路由对象
-      const route: ReactRouteBase = {
-        caseSensitive, // 大小写敏感性
-        path: '', // 路由路径（稍后设置）
-        rawRoute: pathNodes.slice(0, i + 1).join('/'), // 原始路由路径
-      }
-
-      // 如果是最后一个节点，设置组件元素
-      if (i === pathNodes.length - 1)
-        route.element = element
-
-      // 检查是否为索引路由
-      const isIndexRoute = normalizeCase(node, caseSensitive).endsWith('index')
-
-      // 设置路由路径
-      if (!route.path && isIndexRoute) {
-        route.path = '/' // 索引路由使用根路径
-      }
-      else if (!isIndexRoute) {
-        route.path = buildReactRoutePath(node)
-      }
-
-      // 查找父路由
-      const parent = parentRoutes.find((parent) => {
-        return pathNodes.slice(0, i).join('/') === parent.rawRoute
-      })
-
-      if (parent) {
-        // 确保父路由有子路由数组
-        parent.children = parent.children || []
-        // 切换到父路由的子路由数组
-        parentRoutes = parent.children
-      }
-
-      // 检查当前路由是否已存在
-      const exits = parentRoutes.some((parent) => {
-        return pathNodes.slice(0, i + 1).join('/') === parent.rawRoute
-      })
-      // 如果不存在，则添加到当前层级
-      if (!exits)
-        parentRoutes.push(route)
-    }
-  })
+  // console.log('file ===>', file)
+  // console.log('map ===>', map)
 
   // 准备最终路由（排序、处理动态路由等）
   let finalRoutes = prepareRoutes(routes, ctx.options)
@@ -162,7 +108,7 @@ export function reactResolver(): PageResolver {
      * @returns React 相关的模块 ID 数组
      */
     resolveModuleIds() {
-      return ['~react-pages', 'virtual:generated-pages-react']
+      return ['~react-pages', 'virtual:better-pages-create']
     },
 
     /**

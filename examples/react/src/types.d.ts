@@ -6,7 +6,7 @@ declare module '~react-pages' {
   export default routes
 }
 
-declare module 'virtual:generated-pages-react' {
+declare module 'virtual:better-pages-create' {
   import type { ReactElement } from 'react'
 
   const routes: ReactElement[]
