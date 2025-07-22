@@ -1,13 +1,8 @@
-/**
- * 文件处理模块
- * 负责页面文件的发现和目录解析
- */
-
 import type { PageOptions, ResolvedOptions } from './types'
 import { join } from 'node:path'
-import { slash } from '@antfu/utils' // 路径斜杠标准化
-import { globSync } from 'tinyglobby' // 文件 glob 匹配
-import { extsToGlob } from './utils' // 扩展名转 glob 模式
+import { slash } from '@antfu/utils'
+import { globSync } from 'tinyglobby'
+import { extsToGlob } from './utils'
 
 /**
  * 解析页面目录
@@ -44,17 +39,11 @@ export function getPageDirs(PageOptions: PageOptions, root: string, exclude: str
  * @returns 页面文件路径数组
  */
 export function getPageFiles(path: string, options: ResolvedOptions, pageOptions?: PageOptions): string[] {
-  const {
-    exclude,
-    extensions,
-  } = options
+  const { exclude, extensions } = options
 
-  // 将扩展名转换为 glob 模式
-  const ext = extsToGlob(extensions)
-  // 使用自定义文件模式或默认模式
-  const pattern = pageOptions?.filePattern ?? `**/*.${ext}`
+  const ext = extsToGlob(extensions) // 将扩展名转换为 glob 模式
+  const pattern = pageOptions?.filePattern ?? `**/*.${ext}` // 使用自定义文件模式或默认模式
 
-  // 使用 glob 匹配文件
   const files = globSync(pattern, {
     ignore: exclude, // 忽略的模式
     onlyFiles: true, // 只匹配文件

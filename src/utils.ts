@@ -2,19 +2,15 @@ import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ResolvedOptions } from './types'
 import { resolve } from 'node:path'
 import { URLSearchParams } from 'node:url'
-import { slash } from '@antfu/utils' // 路径斜杠标准化
+import { slash } from '@antfu/utils'
 import Debug from 'debug'
-import micromatch from 'micromatch' // 文件匹配工具
+import micromatch from 'micromatch'
 import {
-  COUNTSLASH_RE, // 计算斜杠正则
-  MODULE_ID_VIRTUAL, // 虚拟模块 ID
+  COUNTSLASH_RE,
+  MODULE_ID_VIRTUAL,
   PAGE_DEGREE_SPLITTER,
 } from './constants'
 
-/**
- * 调试工具对象
- * 为不同模块提供独立的调试日志功能
- */
 export const debug = {
   hmr: Debug('vite-plugin-pages:hmr'), // 热模块替换调试
   routeBlock: Debug('vite-plugin-pages:routeBlock'), // 路由块调试
@@ -32,9 +28,7 @@ export const debug = {
  * @returns glob 模式字符串
  */
 export function extsToGlob(extensions: string[]) {
-  return extensions.length > 1
-    ? `{${extensions.join(',')}}` // 多个扩展名：{js,ts,vue}
-    : extensions[0] || '' // 单个扩展名或空字符串
+  return extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0] || ''
 }
 
 /**
@@ -70,23 +64,10 @@ function isPagesDir(path: string, options: ResolvedOptions) {
  */
 export function isTarget(path: string, options: ResolvedOptions) {
   return (
-    isPagesDir(path, options) // 在页面目录中
-    && !micromatch.isMatch(path, options.exclude) // 不在排除列表中
-    && options.extensionsRE.test(path) // 扩展名匹配
+    isPagesDir(path, options)
+    && !micromatch.isMatch(path, options.exclude)
+    && options.extensionsRE.test(path)
   )
-}
-
-/**
- * 解析导入模式
- * @param filepath - 文件路径
- * @param options - 已解析的选项
- * @returns 导入模式（'sync' 或 'async'）
- */
-export function resolveImportMode(filepath: string, options: ResolvedOptions) {
-  const mode = options.importMode
-  if (typeof mode === 'function')
-    return mode(filepath, options) // 如果是函数，调用函数获取模式
-  return mode // 如果是字符串，直接返回
 }
 
 /**
@@ -112,9 +93,10 @@ export function invalidatePagesModule(server: ViteDevServer) {
  * @returns 处理后的字符串
  */
 export function normalizeCase(str: string, caseSensitive: boolean) {
-  if (!caseSensitive)
-    return str.toLocaleLowerCase() // 不敏感时转为小写
-  return str // 敏感时保持原样
+  if (!caseSensitive) {
+    return str.toLocaleLowerCase()
+  }
+  return str
 }
 
 /**
@@ -128,9 +110,9 @@ export function parsePageRequest(id: string) {
   const query = new URLSearchParams(rawQuery) // 解析查询参数
   const pageId = query.get('id') // 获取页面 ID
   return {
-    moduleId, // 模块 ID
-    query, // 查询参数对象
-    pageId, // 页面 ID
+    moduleId,
+    query,
+    pageId,
   }
 }
 
@@ -155,11 +137,8 @@ export function splitRouterName(name: string) {
 
   return names.reduce((prev, cur) => {
     const last = prev[prev.length - 1]
-
     const next = last ? `${last}${PAGE_DEGREE_SPLITTER}${cur}` : cur
-
     prev.push(next)
-
     return prev
   }, [] as string[])
 }

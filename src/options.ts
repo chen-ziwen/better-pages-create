@@ -1,5 +1,5 @@
 // 导入类型定义：导入模式解析器、已解析选项、用户选项
-import type { ImportModeResolver, ResolvedOptions, UserOptions } from './types'
+import type { ResolvedOptions, UserOptions } from './types'
 // 导入 Node.js 内置模块
 import { resolve } from 'node:path' // 路径解析工具
 import process from 'node:process' // 进程相关工具
@@ -38,23 +38,6 @@ function resolvePageDirs(dirs: UserOptions['dirs'], root: string, exclude: strin
 }
 
 /**
- * 同步索引解析器：决定页面组件的导入模式
- * 对于根路由的 index 页面使用同步导入，其他页面使用异步导入
- * @param filepath - 文件路径
- * @param options - 已解析的选项配置
- * @returns 'sync' 表示同步导入，'async' 表示异步导入
- */
-export const syncIndexResolver: ImportModeResolver = (filepath, options) => {
-  // 遍历所有页面目录配置
-  for (const page of options.dirs) {
-    // 如果是根路由（baseRoute 为空）且文件路径是 index 页面
-    if (page.baseRoute === '' && filepath.startsWith(`/${page.dir}/index`))
-      return 'sync' // 返回同步导入模式
-  }
-  return 'async' // 其他情况返回异步导入模式
-}
-
-/**
  * 获取页面解析器
  * @param originalResolver - 用户配置的解析器，可以是字符串或解析器对象
  * @returns 解析器对象
@@ -84,11 +67,9 @@ function getResolver(originalResolver: UserOptions['resolver']) {
 export function resolveOptions(userOptions: UserOptions, viteRoot?: string): ResolvedOptions {
   const {
     dirs = ['src/pages'], // 页面目录，默认为 'src/pages'
-    routeBlockLang = 'json5', // 路由块语言，默认为 'json5'
     exclude = ['**/components/**', '**/modules/**'], // 排除的文件/目录模式
     caseSensitive = false, // 路由是否大小写敏感，默认为 false
     routeNameSeparator = '_', // 路由名称分隔符，默认为 '_'
-    fullPath = false, // 是否为完整路径，默认为 false
     alias = { '@': 'src' }, // 项目别名
     extendRoute, // 扩展路由的函数
     onRoutesGenerated, // 路由生成后的回调函数
@@ -98,10 +79,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
   } = userOptions
 
   const root = viteRoot || slash(process.cwd())
-
-  const importMode = userOptions.importMode || syncIndexResolver
-
-  const importPath = userOptions.importPath || 'relative'
 
   const resolver = getResolver(userOptions.resolver)
 
@@ -115,14 +92,10 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
 
   const resolvedOptions: ResolvedOptions = {
     dirs: resolvedDirs, // 已解析的页面目录列表
-    routeBlockLang, // 路由块语言（json5/json/yaml/yml）
     moduleIds, // 模块 ID 列表
     root, // 项目根目录
     alias, // 项目别名
-    fullPath, // 是否为完整路径
     extensions, // 支持的文件扩展名列表
-    importMode, // 导入模式（同步/异步）
-    importPath, // 导入路径类型（绝对/相对）
     exclude, // 排除的文件/目录模式
     caseSensitive, // 路由大小写敏感性
     resolver, // 页面解析器实例

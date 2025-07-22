@@ -13,12 +13,12 @@ export const MODULE_IDS = [
 /**
  * 虚拟模块 ID - 用于生成的页面
  */
-export const MODULE_ID_VIRTUAL = 'virtual:vite-plugin-pages/generated-pages'
+export const MODULE_ID_VIRTUAL = 'virtual:better-pages-create/generated-pages'
 
 /**
  * 虚拟模块 ID - 用于路由块
  */
-export const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:vite-plugin-pages/route-block'
+export const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:better-pages-create/route-block'
 
 /**
  * 路由导入名称模板
@@ -40,11 +40,6 @@ export const SPLAT_RE = [/\[\.{3}\w+\]/g, '*'] as const
  * 匹配格式 [param] 替换为 :param
  */
 export const PARAM_RE = [/\[([^\]]+)\]/g, ':$1'] as const
-
-/**
- * 匹配格式 -en 或 -[...lang] 替换为 param? 和 :param?
- */
-// export const OPTIONAL_RE = [/^-(:?[\w-]+|\*)/, '$1?'] as const
 
 /**
  * 将 _ 替换成 /
@@ -75,7 +70,7 @@ export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.tsx$/
 export const NOT_FOUND_ROUTE = {
   fullPath: '*',
   importPath: '',
-  matched: { index: '404' } as Record<string, string>,
+  matched: { index: '$404' } as Record<string, string>, // 需要特殊处理
   routeName: 'notFound',
   routePath: '*',
 }

@@ -160,11 +160,7 @@ export default defineConfig({
       // 路由风格：next | nuxt | remix
       routeStyle: 'next',
       // 支持的文件扩展名
-      extensions: ['tsx', 'jsx', 'ts', 'js'],
-      // 导入模式
-      importMode: (filepath) => {
-        return filepath.includes('index') ? 'sync' : 'async'
-      }
+      extensions: ['tsx', 'jsx', 'ts', 'js']
     })
   ]
 })

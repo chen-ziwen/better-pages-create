@@ -4,17 +4,13 @@ import { MODULE_ID_VIRTUAL, ROUTE_BLOCK_ID_VIRTUAL } from './constants'
 import { PageContext } from './context'
 import { parsePageRequest } from './utils'
 
-function pagesPlugin(userOptions: UserOptions = {}): Plugin {
+function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
   let ctx: PageContext
 
   return {
-    name: 'vite-plugin-pages',
+    name: 'better-pages-create',
     enforce: 'pre',
 
-    /**
-     * 配置解析完成钩子
-     * 在 Vite 配置解析完成后调用，用于初始化插件
-     */
     async configResolved(config) {
       if (
         !userOptions.resolver
@@ -26,7 +22,7 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
       ctx = new PageContext(userOptions, config.root)
       ctx.setLogger(config.logger)
 
-      await ctx.searchGlob() // 搜索页面文件
+      await ctx.searchGlob()
     },
     api: {
       getResolvedRoutes() {
@@ -48,14 +44,11 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
      */
     resolveId(id) {
       // 检查是否为页面模块 ID
-      if (ctx.options.moduleIds.includes(id))
+      if (ctx.options.moduleIds.includes(id)) {
         return `${MODULE_ID_VIRTUAL}?id=${id}`
+      }
 
-      // // 检查是否为路由块查询
-      // if (routeBlockQueryRE.test(id))
-      //   return ROUTE_BLOCK_ID_VIRTUAL
-
-      return null // 不处理其他 ID
+      return null
     },
 
     /**
@@ -85,17 +78,7 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
   }
 }
 
-export { syncIndexResolver } from './options'
-
-export type {
-  ReactRoute,
-} from './resolvers'
-
-export {
-  reactResolver,
-} from './resolvers'
-
 export * from './types'
 
 export { PageContext }
-export default pagesPlugin
+export default betterPagesPlugin

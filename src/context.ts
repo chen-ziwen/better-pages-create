@@ -7,10 +7,10 @@ import type { Logger, ViteDevServer } from 'vite'
 import type { PageOptions, ResolvedOptions, UserOptions } from './types'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
-import { slash, toArray } from '@antfu/utils' // 路径和数组工具
-import { getPageFiles } from './files' // 文件获取
-import { resolveOptions } from './options' // 选项解析
-import { debug, invalidatePagesModule, isTarget } from './utils' // 调试和工具函数
+import { slash, toArray } from '@antfu/utils'
+import { getPageFiles } from './files'
+import { resolveOptions } from './options'
+import { debug, invalidatePagesModule, isTarget } from './utils'
 
 /**
  * 页面路由接口
@@ -87,24 +87,37 @@ export class PageContext {
 
     // 监听文件添加事件
     watcher.on('add', async (path) => {
-      path = slash(path) // 标准化路径
-      if (!isTarget(path, this.options)) // 检查是否为目标文件
+      path = slash(path)
+
+      if (!isTarget(path, this.options)) {
         return
-        // 找到对应的页面目录配置
+      }
+
+      // 找到对应的页面目录配置
       const page = this.options.dirs.find(i => path.startsWith(slash(resolve(this.root, i.dir))))!
-      await this.addPage(path, page) // 添加页面
-      this.onUpdate() // 触发更新
+
+      // 添加页面
+      await this.addPage(path, page)
+
+      // 触发更新
+      this.onUpdate()
     })
 
     // 监听文件修改事件
     watcher.on('change', async (path) => {
-      path = slash(path) // 标准化路径
-      if (!isTarget(path, this.options)) // 检查是否为目标文件
+      path = slash(path)
+
+      if (!isTarget(path, this.options)) {
         return
-      const page = this.mPageRouteMap.get(path) // 获取页面信息
-      if (page)
+      }
+
+      // 获取页面信息
+      const page = this.mPageRouteMap.get(path)
+
       // 调用解析器的热模块替换处理函数
+      if (page) {
         await this.options.resolver.hmr?.changed?.(this, path)
+      }
     })
   }
 
@@ -151,7 +164,9 @@ export class PageContext {
    */
   async removePage(path: string) {
     debug.pages('remove', path)
-    this.mPageRouteMap.delete(path) // 从映射表中删除
+
+    // 从映射表中删除
+    this.mPageRouteMap.delete(path)
     // 调用解析器的热模块替换移除处理函数
     await this.options.resolver.hmr?.removed?.(this, path)
   }
@@ -161,16 +176,16 @@ export class PageContext {
    * 当页面发生变化时，使相关模块失效并触发页面重新加载
    */
   onUpdate() {
+    // 如果没有开发服务器，直接返回
     if (!this.mServer) {
-      return // 如果没有开发服务器，直接返回
+      return
     }
 
-    invalidatePagesModule(this.mServer) // 使页面模块失效
+    // 使页面模块失效
+    invalidatePagesModule(this.mServer)
     debug.hmr('Reload generated pages.')
     // 发送全页面重新加载消息
-    this.mServer.ws.send({
-      type: 'full-reload',
-    })
+    this.mServer.ws.send({ type: 'full-reload' })
   }
 
   /**
@@ -189,8 +204,11 @@ export class PageContext {
   async searchGlob() {
     // 遍历所有页面目录，获取文件列表
     const pageDirFiles = this.options.dirs.map((page) => {
-      const pagesDirPath = slash(resolve(this.options.root, page.dir)) // 页面目录绝对路径
-      const files = getPageFiles(pagesDirPath, this.options, page) // 获取页面文件
+      // 页面目录绝对路径
+      const pagesDirPath = slash(resolve(this.options.root, page.dir))
+
+      // 获取页面文件
+      const files = getPageFiles(pagesDirPath, this.options, page)
       debug.search(page.dir, files)
       return {
         ...page,

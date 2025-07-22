@@ -1,5 +1,12 @@
 import type { PageRoute } from './context'
-import type { ConstRoute, ResolvedOptions, RouterFile, RouterNamePathEntry, RouterNamePathMap, RouterTree } from './types'
+import type {
+  ConstRoute,
+  ResolvedOptions,
+  RouterFile,
+  RouterNamePathEntry,
+  RouterNamePathMap,
+  RouterTree,
+} from './types'
 import { join } from 'node:path'
 import { slash } from '@antfu/utils'
 import {
@@ -13,7 +20,6 @@ import {
   ROUTE_NAME_WITH_PARAMS_PATTERN,
   SPLAT_RE,
 } from './constants'
-
 import { isRouteGroup, splitRouterName } from './utils'
 
 /**
@@ -63,10 +69,13 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
  * 构建 React 路由路径
  */
 export function transformRouterNameToPath(name: string) {
-  if (name === 'root')
+  if (name === 'root') {
     return '/'
-  if (isRouteGroup(name))
+  }
+
+  if (isRouteGroup(name)) {
     return null
+  }
 
   const resolveName = name
     .replace(...GROUP_RE)
@@ -107,6 +116,9 @@ export function transformRouterMapsToEntries(maps: RouterNamePathMap) {
   return Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
 }
 
+/**
+ * 将条目转换为路由树
+ */
 export function transformRouterEntriesToTrees(
   entries: RouterNamePathEntry[],
   maps: RouterNamePathMap,
@@ -158,7 +170,6 @@ export function transformRouterEntriesToTrees(
 
   const trees = topLevelRoutes.map(routeName => buildTree(routeName))
 
-  // 处理 root 节点逻辑保持不变
   const rootIndex = trees.findIndex(tree => tree.routeName === 'root')
 
   if (rootIndex !== -1 && trees[rootIndex].matched.layout) {
@@ -169,11 +180,13 @@ export function transformRouterEntriesToTrees(
     }]
 
     const routes = newTrees[0].children
+
     const notFoundPath = routes.find(item => item?.routeName === '404')
     if (notFoundPath) {
       NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
     routes.push(NOT_FOUND_ROUTE)
+
     return newTrees
   }
 
@@ -185,8 +198,43 @@ export function transformRouterEntriesToTrees(
   return trees
 }
 
-export function transformRouterTreesToRoutes(trees: RouterTree[], options: ResolvedOptions) {
-  return trees.map(item => transformRouteTreeToElegantConstRoute(item, options))
+/**
+ * 转换路由树为常量路由
+ */
+export function transformRouteTreeToElegantConstRoute(tree: RouterTree, options: ResolvedOptions) {
+  return buildConstRoute(tree, options)
+}
+
+/**
+ * 构建常量路由（统一处理函数）
+ */
+function buildConstRoute(
+  tree: RouterTree,
+  options: ResolvedOptions,
+  parent?: ConstRoute,
+): ConstRoute {
+  const { extendRoute } = options
+  const { children = [], matched, routeName, routePath } = tree
+
+  const route: ConstRoute = {
+    matched,
+    name: routeName,
+    path: routePath,
+    handle: isRouteGroup(routeName) ? null : {},
+  }
+
+  // 调用扩展路由函数
+  if (extendRoute) {
+    const extendedRoute = extendRoute(route, parent)
+    extendedRoute && Object.assign(route, extendedRoute)
+  }
+
+  // 递归处理子路由
+  if (children.length > 0) {
+    route.children = children.map(child => buildConstRoute(child, options, route))
+  }
+
+  return route
 }
 
 /**
@@ -196,7 +244,6 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
   const matched: Record<string, string> = {}
 
   const startIndex = data.findIndex(item => item.routeName === currentName)
-
   if (startIndex === -1) {
     return { fullPath: null, matched }
   }
@@ -204,77 +251,26 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
   const endIndex = Math.min(startIndex + 4, data.length)
 
   for (let i = startIndex; i < endIndex; i++) {
-    const { importPath, routeName, glob } = data[i]
+    const { importAliasPath, routeName, glob } = data[i]
 
     if (routeName !== currentName)
       break
 
     if (glob.endsWith('layout.tsx')) {
-      matched.layout = currentName
+      matched.layout = importAliasPath // 使用别名路径
     }
     else if (glob.endsWith('index.tsx') || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
       if (!isRouteGroup(routeName)) {
-        matched.index = `/${importPath}`
+        matched.index = importAliasPath // 使用别名路径
       }
     }
     else if (glob.endsWith('loading.tsx')) {
-      matched.loading = `/${importPath}`
+      matched.loading = importAliasPath // 使用别名路径
     }
     else if (glob.endsWith('error.tsx')) {
-      matched.error = currentName
+      matched.error = importAliasPath // 使用别名路径
     }
   }
 
   return { fullPath: data[startIndex].fullPath, matched }
-}
-
-/**
- * 转换路由树为常量路由
- */
-function transformRouteTreeToElegantConstRoute(tree: RouterTree, options: ResolvedOptions) {
-  const { onRouteMetaGen } = options
-  const { children = [], matched, routeName, routePath } = tree
-
-  const route: ConstRoute = {
-    matched,
-    name: routeName,
-    path: routePath,
-    handle: isRouteGroup(routeName)
-      ? null
-      : (typeof onRouteMetaGen === 'function' ? onRouteMetaGen(routeName) : undefined),
-  }
-
-  if (children.length > 0) {
-    route.children = children.map(item =>
-      recursiveGetElegantConstRouteByChildTree(item, options),
-    )
-  }
-
-  return route
-}
-
-/**
- * 递归获取子路由树
- */
-function recursiveGetElegantConstRouteByChildTree(
-  childTree: RouterTree,
-  options: ResolvedOptions,
-): ConstRoute {
-  const { onRouteMetaGen } = options
-  const { children = [], matched, routeName, routePath } = childTree
-
-  const route: ConstRoute = {
-    matched,
-    name: routeName,
-    path: routePath,
-    handle: isRouteGroup(routeName) ? null : onRouteMetaGen(routeName),
-  }
-
-  if (children.length > 0) {
-    route.children = children.map(item =>
-      recursiveGetElegantConstRouteByChildTree(item, options),
-    )
-  }
-
-  return route
 }

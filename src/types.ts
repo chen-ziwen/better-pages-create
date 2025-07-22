@@ -1,31 +1,12 @@
-/**
- * 类型定义文件
- * 包含插件使用的所有 TypeScript 类型定义
- */
-
-// 导入外部类型
 import type { Awaitable } from '@antfu/utils' // 可等待类型（Promise 或同步值）
 import type { RouteObject } from 'react-router-dom'
 import type { PageContext } from './context' // 页面上下文类型
-import type { ReactRoute } from './resolvers' // React 路由类型
 
 /**
  * 可选属性工具类型
  * 将类型 T 中的指定属性 K 变为可选
  */
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
-
-/**
- * 导入模式类型
- * sync: 同步导入，async: 异步导入
- */
-export type ImportMode = 'sync' | 'async'
-
-/**
- * 导入模式解析器函数类型
- * 根据文件路径和插件选项决定使用同步还是异步导入
- */
-export type ImportModeResolver = (filepath: string, pluginOptions: ResolvedOptions) => ImportMode
 
 /**
  * 解析后的 JSX 接口
@@ -50,7 +31,7 @@ export type CustomBlock = Record<string, any>
  * 内置页面解析器类型
  * 支持的框架类型
  */
-export type InternalPageResolvers = 'vue' | 'react' | 'solid'
+export type InternalPageResolvers = 'react'
 
 /**
  * 页面选项接口
@@ -101,7 +82,7 @@ export interface PageResolver {
    * 获取计算后的路由
    * 返回处理后的路由对象数组
    */
-  getComputedRoutes: (ctx: PageContext) => Awaitable<ReactRoute[]>
+  getComputedRoutes: (ctx: PageContext) => Awaitable<ConstRoute[]>
 
   /**
    * 字符串化选项（可选）
@@ -178,24 +159,6 @@ interface Options {
   exclude: string[]
 
   /**
-   * 是否为完整路径
-   * @default false
-   */
-  fullPath: boolean
-
-  /**
-   * 直接导入路由或作为异步组件导入
-   * @default 'root index file => "sync", others => "async"'
-   */
-  importMode: ImportMode | ImportModeResolver
-
-  /**
-   * 从绝对路径或相对路径导入页面组件
-   * @default 'relative'
-   */
-  importPath: 'absolute' | 'relative'
-
-  /**
    * 生成的路由名称的分隔符
    * @default '_'
    */
@@ -206,12 +169,6 @@ interface Options {
    * @default false
    */
   caseSensitive: boolean
-
-  /**
-   * 设置默认的路由块解析器，或在 SFC 路由块中使用 `<route lang=xxx>`
-   * @default 'json5'
-   */
-  routeBlockLang: 'json5' | 'json' | 'yaml' | 'yml'
 
   /**
    * 路由导入的模块 ID
@@ -242,13 +199,13 @@ interface Options {
    * 扩展路由记录的函数
    * 允许用户自定义修改生成的路由对象
    */
-  extendRoute?: (route: any, parent: any | undefined) => any | void
+  extendRoute?: (route: ConstRoute, parent: ConstRoute | undefined) => ConstRoute | void
 
   /**
    * 自定义生成的路由
    * 在路由生成完成后调用，允许用户进一步处理路由数组
    */
-  onRoutesGenerated?: (routes: any[]) => Awaitable<any[] | void>
+  onRoutesGenerated?: (routes: ConstRoute[]) => Awaitable<ConstRoute[] | void>
 
   /**
    * 自定义生成的客户端代码
@@ -257,20 +214,12 @@ interface Options {
   onClientGenerated?: (clientCode: string) => Awaitable<string | void>
 }
 
-/**
- * 用户选项类型
- * 将 Options 接口的所有属性变为可选，供用户配置使用
- */
 export type UserOptions = Partial<Options>
 
 export type RouterNamePathMap = Map<string, string | null>
 
 export type RouterNamePathEntry = [string, string | null]
 
-/**
- * 已解析选项接口
- * 继承 Options 接口，但排除一些已废弃的属性，并添加解析后的新属性
- */
 export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSquareBrackets' | 'syncIndex' | 'moduleId'> {
   root: string
   dirs: PageOptions[]
@@ -317,14 +266,9 @@ export interface CustomRouteConfig {
 
 export type RouteMeta = Record<string | number, unknown>
 
-/** elegant const route */
 export type ConstRoute = Omit<RouteObject, 'children' | 'id' | 'path'> & {
   children?: ConstRoute[]
   matched: Record<string, string>
   name: string
   path?: string | null
-}
-
-export interface RouteConstExport {
-  generatedRoutes: ConstRoute[]
 }

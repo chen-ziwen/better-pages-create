@@ -10,7 +10,7 @@ import type { ResolvedOptions } from './types' // 插件选项类型
 import { ROUTE_IMPORT_NAME } from './constants' // 路由导入名称模板
 
 // 导入工具函数
-import { resolveImportMode } from './utils' // 导入模式解析
+// import { resolveImportMode } from './utils' // 导入模式解析
 
 // 正则表达式：匹配组件或元素属性
 const componentRE = /"(?:component|element)":("(.*?)")/g
@@ -49,9 +49,6 @@ function replaceFunction(_: any, value: any) {
   return value // 非函数值直接返回
 }
 
-/**
- * Creates a stringified Vue Router route definition.
- */
 export function stringifyRoutes(
   preparedRoutes: any[],
   options: ResolvedOptions,
@@ -59,12 +56,7 @@ export function stringifyRoutes(
   const importsMap: Map<string, string> = new Map()
 
   function getImportString(path: string, importName: string) {
-    const mode = resolveImportMode(path, options)
-    return mode === 'sync'
-      ? `import ${importName} from "${path}"`
-      : `const ${importName} = ${
-        options.resolver.stringify?.dynamicImport?.(path) || `() => import("${path}")`
-      }`
+    return `import ${importName} from "${path}"`
   }
 
   function componentReplacer(str: string, replaceStr: string, path: string) {
