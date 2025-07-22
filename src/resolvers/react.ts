@@ -72,6 +72,7 @@ async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
   // 获取所有页面路由并按路径深度排序（用于热模块替换）
   const pageRoutes = [...ctx.pageRouteMap.values()].sort((a, b) => countSlash(a.route) - countSlash(b.route))
 
+  // 将页面路由转换为路由文件信息
   const files = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
 
   const maps = transformRouterFilesToMaps(files, ctx.options)
@@ -88,7 +89,7 @@ async function computeReactRoutes(ctx: PageContext): Promise<ReactRoute[]> {
 
   // console.log('entries ===>', entries)
 
-  // console.log('trees ===>', trees)
+  // console.log('trees ===>', JSON.stringify(trees, null, 2))
 
   // console.log('routes ===>', rt)
 

@@ -75,7 +75,7 @@ export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.tsx$/
 export const NOT_FOUND_ROUTE = {
   fullPath: '*',
   importPath: '',
-  matchedFiles: [null, '404', null, null],
+  matched: { index: '404' } as Record<string, string>,
   routeName: 'notFound',
   routePath: '*',
 }

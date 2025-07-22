@@ -16,47 +16,36 @@ import {
 
 import { isRouteGroup, splitRouterName } from './utils'
 
+/**
+ * 将页面 glob 路径转换为路由文件信息
+ */
 export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: ResolvedOptions) {
   const { alias } = options
-
   const { path: fullPath, route, suffix, pageDir } = pageRoute
-
   const glob = `${route}.${suffix}`
-
   const importPath = slash(join(pageDir, glob))
 
-  let importAliasPath = importPath
-
-  const dirAndFile = glob.split(PATH_SPLITTER).reverse()
-
-  const [file, ...dirs] = dirAndFile
-
-  const aliasEntries = Object.entries(alias)
-
   // 处理路径别名
-  aliasEntries.some((item) => {
-    const [a, dir] = item
-    const match = importPath.startsWith(dir)
-
-    if (match) {
-      importAliasPath = importAliasPath.replace(dir, a)
+  let importAliasPath = importPath
+  for (const [aliasKey, dir] of Object.entries(alias)) {
+    if (importPath.startsWith(dir)) {
+      importAliasPath = importAliasPath.replace(dir, aliasKey)
+      break
     }
-    return match
-  })
+  }
 
-  // 去除 _ 开头的目录
-  const filteredDirs = dirs.filter(dir => !dir.startsWith(PAGE_DEGREE_SPLITTER)).reverse()
+  // 解析目录和文件
+  const [file, ...dirs] = glob.split(PATH_SPLITTER).reverse()
+  const filteredDirs = dirs
+    .filter(dir => !dir.startsWith(PAGE_DEGREE_SPLITTER))
+    .reverse()
 
-  // file 是带有后缀名的， 去除后缀名后插入到数组
+  // 处理特殊文件名
   if (PAGE_FILE_NAME_WITH_SQUARE_BRACKETS_PATTERN.test(file)) {
     filteredDirs.push(file.replace(new RegExp(`\\.${suffix}$`), ''))
   }
 
-  let routeName = filteredDirs.join(PAGE_DEGREE_SPLITTER).toLocaleLowerCase()
-
-  if (filteredDirs.length === 0) {
-    routeName = 'root'
-  }
+  const routeName = filteredDirs.length === 0 ? 'root' : filteredDirs.join(PAGE_DEGREE_SPLITTER).toLowerCase()
 
   const routePath = transformRouterNameToPath(routeName)
 
@@ -72,65 +61,50 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
 
 /**
  * 构建 React 路由路径
- * 将文件名转换为 React Router 可识别的路由路径
- * @param name - 文件名
- * @returns React Router 路由路径
  */
-export function transformRouterNameToPath(
-  name: string,
-) {
-  if (name === 'root') {
+export function transformRouterNameToPath(name: string) {
+  if (name === 'root')
     return '/'
-  }
-
-  if (isRouteGroup(name)) {
+  if (isRouteGroup(name))
     return null
-  }
 
   const resolveName = name
-    // 去除路由组 去除路由组 (fileName) 或 (fileName)_
     .replace(...GROUP_RE)
-    // 替换 [...param] 为 *
     .replace(...SPLAT_RE)
-    // 替换 [param] 为 :param
     .replace(...PARAM_RE)
-    // 替换 _ 为 /
     .replace(...PATH_REPLACER)
 
   return `/${resolveName}`
 }
 
+/**
+ * 将路由文件转换为名称路径映射
+ */
 export function transformRouterFilesToMaps(files: RouterFile[], options: ResolvedOptions) {
-  const maps: Map<string, string | null> = new Map()
+  const maps = new Map<string, string | null>()
 
-  files.forEach((file) => {
-    const { routeName, routePath } = file
-
+  for (const { routeName, routePath } of files) {
     const names = splitRouterName(routeName)
 
-    names.forEach((name) => {
+    for (const name of names) {
       if (!maps.has(name)) {
         const isSameName = name === routeName
-
         const itemRouteName = isSameName ? name : options.routeNameTransformer(name)
         const itemRoutePath = isSameName ? routePath : options.routePathTransformer(itemRouteName, transformRouterNameToPath(name))
 
         maps.set(itemRouteName, itemRoutePath)
       }
-    })
-  })
+    }
+  }
 
   return maps
 }
 
+/**
+ * 将映射转换为条目数组
+ */
 export function transformRouterMapsToEntries(maps: RouterNamePathMap) {
-  const entries: RouterNamePathEntry[] = []
-
-  maps.forEach((routePath, routeName) => {
-    entries.push([routeName, routePath])
-  })
-
-  return entries.sort((a, b) => a[0].localeCompare(b[0]))
+  return Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
 }
 
 export function transformRouterEntriesToTrees(
@@ -138,86 +112,76 @@ export function transformRouterEntriesToTrees(
   maps: RouterNamePathMap,
   files: RouterFile[],
 ) {
-  const treeWithClassify = new Map<string, string[][]>()
+  // 构建路由层级关系映射
+  const routeHierarchy = new Map<string, Set<string>>()
 
   entries.forEach(([routeName]) => {
-    const isFirstLevel = !routeName.includes(PAGE_DEGREE_SPLITTER)
+    const parts = routeName.split(PAGE_DEGREE_SPLITTER)
 
-    if (isFirstLevel) {
-      treeWithClassify.set(routeName, [])
-    }
-    else {
-      const names = routeName.split(PAGE_DEGREE_SPLITTER)
+    // 为每个层级建立父子关系
+    for (let i = 0; i < parts.length; i++) {
+      const currentRoute = parts.slice(0, i + 1).join(PAGE_DEGREE_SPLITTER)
+      const parentRoute = i > 0 ? parts.slice(0, i).join(PAGE_DEGREE_SPLITTER) : null
 
-      const firstLevelName = names[0]
-
-      const levels = routeName.split(PAGE_DEGREE_SPLITTER).length
-
-      const currentLevelChildren = treeWithClassify.get(firstLevelName) || []
-
-      const child = currentLevelChildren[levels - 2] || []
-
-      child.push(routeName)
-
-      currentLevelChildren[levels - 2] = child
-
-      treeWithClassify.set(firstLevelName, currentLevelChildren)
+      if (parentRoute) {
+        if (!routeHierarchy.has(parentRoute)) {
+          routeHierarchy.set(parentRoute, new Set())
+        }
+        routeHierarchy.get(parentRoute)!.add(currentRoute)
+      }
     }
   })
 
-  const trees: RouterTree[] = []
+  // 构建树结构
+  const buildTree = (routeName: string): RouterTree => {
+    const { fullPath, matched } = findMatchedFiles(files, routeName)
 
-  treeWithClassify.forEach((children, key) => {
-    const { fullPath, matchedResult } = findMatchedFiles(files, key)
-
-    const firstLevelRoute: RouterTree = {
+    const tree: RouterTree = {
       fullPath,
-      matchedFiles: matchedResult,
-      routeName: key,
-      routePath: maps.get(key) || null,
+      matched,
+      routeName,
+      routePath: maps.get(routeName) || null,
     }
 
-    const treeChildren = recursiveGetRouteTreeChildren(key, children, maps, files)
-
-    if (treeChildren.length > 0) {
-      firstLevelRoute.children = treeChildren
+    const children = routeHierarchy.get(routeName)
+    if (children && children.size > 0) {
+      tree.children = Array.from(children).map(childName => buildTree(childName))
     }
 
-    trees.push(firstLevelRoute)
-  })
+    return tree
+  }
 
+  // 找到所有顶级路由（没有父级的路由）
+  const topLevelRoutes = entries
+    .map(([routeName]) => routeName)
+    .filter(routeName => !routeName.includes(PAGE_DEGREE_SPLITTER))
+
+  const trees = topLevelRoutes.map(routeName => buildTree(routeName))
+
+  // 处理 root 节点逻辑保持不变
   const rootIndex = trees.findIndex(tree => tree.routeName === 'root')
 
-  if (rootIndex !== -1 && trees[rootIndex].matchedFiles[0]) {
+  if (rootIndex !== -1 && trees[rootIndex].matched.layout) {
     const rootNode = trees[rootIndex]
-
-    // 创建一个新的数组，将 rootNode 的 children 设置为其他所有节点
-    const newTrees = [
-      {
-        ...rootNode, // 保留 root 节点的原有属性
-        children: trees.filter((_, index) => index !== rootIndex), // 将除了 root 以外的所有节点作为 children
-      },
-    ]
+    const newTrees = [{
+      ...rootNode,
+      children: trees.filter((_, index) => index !== rootIndex),
+    }]
 
     const routes = newTrees[0].children
     const notFoundPath = routes.find(item => item?.routeName === '404')
-
     if (notFoundPath) {
-      NOT_FOUND_ROUTE.matchedFiles = notFoundPath.matchedFiles
+      NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
-
     routes.push(NOT_FOUND_ROUTE)
     return newTrees
   }
 
   const notFoundPath = trees.find(item => item?.routeName === '404')
-
   if (notFoundPath) {
-    NOT_FOUND_ROUTE.matchedFiles = notFoundPath.matchedFiles
+    NOT_FOUND_ROUTE.matched = notFoundPath.matched
   }
-
   trees.push(NOT_FOUND_ROUTE)
-
   return trees
 }
 
@@ -225,144 +189,91 @@ export function transformRouterTreesToRoutes(trees: RouterTree[], options: Resol
   return trees.map(item => transformRouteTreeToElegantConstRoute(item, options))
 }
 
-function recursiveGetRouteTreeChildren(
-  parentName: string,
-  children: string[][],
-  maps: RouterNamePathMap,
-  files: RouterFile[],
-) {
-  if (children.length === 0) {
-    return []
-  }
-
-  const [current, ...rest] = children
-
-  const currentChildren = current.filter(name => name.startsWith(parentName) && name !== parentName)
-
-  const trees = currentChildren.map((name) => {
-    const { fullPath, matchedResult } = findMatchedFiles(files, name)
-    const tree: RouterTree = {
-      fullPath,
-      matchedFiles: matchedResult,
-      routeName: name,
-      routePath: maps.get(name) || null,
-    }
-
-    const nextChildren = recursiveGetRouteTreeChildren(name, rest, maps, files)
-
-    if (nextChildren.length > 0) {
-      tree.children = nextChildren
-    }
-
-    return tree
-  })
-
-  return trees
-}
-
+/**
+ * 查找匹配的文件
+ */
 function findMatchedFiles(data: RouterFile[], currentName: string) {
-  // 结果数组，四个值都为 null
-  // 分别对应: 0->layout, 1->index, 2->loading, 3->error
-  const matchedResult: (string | null)[] = [null, null, null, null]
+  const matched: Record<string, string> = {}
 
-  // findIndex 找到当前 name 对应的下标
   const startIndex = data.findIndex(item => item.routeName === currentName)
 
   if (startIndex === -1) {
-    // 找不到就直接返回全是 null 的数组
-    return { fullPath: null, matchedResult }
+    return { fullPath: null, matched }
   }
 
-  // 最多匹配 3 个之后的元素(含自己共 4 个)
-  const endIndex = Math.min(startIndex + 4, data.length - 1)
+  const endIndex = Math.min(startIndex + 4, data.length)
 
-  // 从 startIndex 开始往后遍历，直到 endIndex
-  for (let i = startIndex; i <= endIndex; i += 1) {
-    const { importPath, routeName } = data[i]
+  for (let i = startIndex; i < endIndex; i++) {
+    const { importPath, routeName, glob } = data[i]
 
-    // 如果后面的 name 跟当前 name 不一样，则立即停止匹配
-    if (routeName !== currentName) {
+    if (routeName !== currentName)
       break
-    }
 
-    const { glob } = data[i]
-
-    // 如果 name 一直跟 currentName 一样，则根据文件结尾来判定要填哪一个
     if (glob.endsWith('layout.tsx')) {
-      matchedResult[0] = routeName // 把 layout 填入第一个位置
+      matched.layout = currentName
     }
     else if (glob.endsWith('index.tsx') || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
       if (!isRouteGroup(routeName)) {
-        matchedResult[1] = `/${importPath}` // 填入第二个位置
+        matched.index = `/${importPath}`
       }
     }
     else if (glob.endsWith('loading.tsx')) {
-      matchedResult[2] = `/${importPath}` // 填入第三个位置
+      matched.loading = `/${importPath}`
     }
     else if (glob.endsWith('error.tsx')) {
-      matchedResult[3] = routeName // 填入第四个位置
+      matched.error = currentName
     }
   }
 
-  return { fullPath: data[startIndex].fullPath, matchedResult }
+  return { fullPath: data[startIndex].fullPath, matched }
 }
 
-function transformRouteTreeToElegantConstRoute(tree: RouterTree, options: any) {
+/**
+ * 转换路由树为常量路由
+ */
+function transformRouteTreeToElegantConstRoute(tree: RouterTree, options: ResolvedOptions) {
   const { onRouteMetaGen } = options
-
-  const { children = [], matchedFiles, routeName, routePath } = tree
-
-  const hasChildren = children.length > 0
+  const { children = [], matched, routeName, routePath } = tree
 
   const route: ConstRoute = {
-    matchedFiles,
+    matched,
     name: routeName,
     path: routePath,
+    handle: isRouteGroup(routeName)
+      ? null
+      : (typeof onRouteMetaGen === 'function' ? onRouteMetaGen(routeName) : undefined),
   }
 
-  if (isRouteGroup(routeName)) {
-    route.handle = null
-  }
-  else {
-    if (typeof onRouteMetaGen === 'function') {
-      route.handle = onRouteMetaGen(routeName)
-    }
-  }
-
-  if (hasChildren) {
-    route.children = children.map(item => recursiveGetElegantConstRouteByChildTree(item, options))
+  if (children.length > 0) {
+    route.children = children.map(item =>
+      recursiveGetElegantConstRouteByChildTree(item, options),
+    )
   }
 
   return route
 }
 
+/**
+ * 递归获取子路由树
+ */
 function recursiveGetElegantConstRouteByChildTree(
   childTree: RouterTree,
-  options: any,
+  options: ResolvedOptions,
 ): ConstRoute {
-  const { children = [], matchedFiles, routeName, routePath } = childTree
-
   const { onRouteMetaGen } = options
-
-  const hasChildren = children.length > 0
+  const { children = [], matched, routeName, routePath } = childTree
 
   const route: ConstRoute = {
-    matchedFiles,
+    matched,
     name: routeName,
     path: routePath,
+    handle: isRouteGroup(routeName) ? null : onRouteMetaGen(routeName),
   }
 
-  if (isRouteGroup(routeName)) {
-    route.handle = null
-  }
-  else {
-    route.handle = onRouteMetaGen(routeName)
-  }
-
-  if (hasChildren) {
-    const routeChildren = children.map(item => recursiveGetElegantConstRouteByChildTree(item, options))
-
-    route.children = routeChildren
+  if (children.length > 0) {
+    route.children = children.map(item =>
+      recursiveGetElegantConstRouteByChildTree(item, options),
+    )
   }
 
   return route

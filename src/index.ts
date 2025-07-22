@@ -1,37 +1,26 @@
-/**
- * Vite 页面插件主入口文件
- * 实现基于文件系统的自动路由生成功能
- */
-
 import type { Plugin } from 'vite'
 import type { UserOptions } from './types'
 import { MODULE_ID_VIRTUAL, ROUTE_BLOCK_ID_VIRTUAL } from './constants'
-import { PageContext } from './context' // 页面上下文类
-import { parsePageRequest } from './utils' // 请求解析工具
+import { PageContext } from './context'
+import { parsePageRequest } from './utils'
 
-/**
- * 页面插件工厂函数
- * @param userOptions - 用户配置选项，默认为空对象
- * @returns Vite 插件对象
- */
 function pagesPlugin(userOptions: UserOptions = {}): Plugin {
-  let ctx: PageContext // 页面上下文实例
+  let ctx: PageContext
 
   return {
-    name: 'vite-plugin-pages', // 插件名称
-    enforce: 'pre', // 插件执行顺序：在其他插件之前执行
+    name: 'vite-plugin-pages',
+    enforce: 'pre',
 
     /**
      * 配置解析完成钩子
      * 在 Vite 配置解析完成后调用，用于初始化插件
      */
     async configResolved(config) {
-      // 自动检测 React 项目并设置解析器
       if (
-        !userOptions.resolver // 用户未指定解析器
-        && config.plugins.find(i => i.name.includes('vite:react')) // 存在 React 插件
+        !userOptions.resolver
+        && config.plugins.find(i => i.name.includes('vite:react'))
       ) {
-        userOptions.resolver = 'react' // 自动设置为 React 解析器
+        userOptions.resolver = 'react'
       }
 
       ctx = new PageContext(userOptions, config.root)
@@ -39,15 +28,7 @@ function pagesPlugin(userOptions: UserOptions = {}): Plugin {
 
       await ctx.searchGlob() // 搜索页面文件
     },
-    /**
-     * 插件 API
-     * 提供外部访问插件功能的接口
-     */
     api: {
-      /**
-       * 获取已解析的路由
-       * @returns 计算后的路由数组
-       */
       getResolvedRoutes() {
         return ctx.options.resolver.getComputedRoutes(ctx)
       },

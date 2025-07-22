@@ -304,7 +304,7 @@ export interface RouterOption {
 export interface RouterTree {
   children?: RouterTree[]
   fullPath: string | null
-  matchedFiles: (string | null)[]
+  matched: Record<string, string>
   routeName: string
   routePath: string | null
 }
@@ -320,7 +320,7 @@ export type RouteMeta = Record<string | number, unknown>
 /** elegant const route */
 export type ConstRoute = Omit<RouteObject, 'children' | 'id' | 'path'> & {
   children?: ConstRoute[]
-  matchedFiles: (string | null)[]
+  matched: Record<string, string>
   name: string
   path?: string | null
 }

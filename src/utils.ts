@@ -1,14 +1,9 @@
-/**
- * 工具函数文件
- * 包含插件使用的各种辅助函数和调试工具
- */
-
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ResolvedOptions } from './types'
-import { resolve } from 'node:path' // 路径处理工具
-import { URLSearchParams } from 'node:url' // URL 查询参数解析
+import { resolve } from 'node:path'
+import { URLSearchParams } from 'node:url'
 import { slash } from '@antfu/utils' // 路径斜杠标准化
-import Debug from 'debug' // 调试工具
+import Debug from 'debug'
 import micromatch from 'micromatch' // 文件匹配工具
 import {
   COUNTSLASH_RE, // 计算斜杠正则
@@ -150,6 +145,11 @@ export function isRouteGroup(name: string) {
   return lastName?.startsWith('(') && lastName?.endsWith(')')
 }
 
+/**
+ * 将路由名称分割为数组，每个元素为一个级别的路由名称。
+ * @param name
+ * @returns 路由名称数组
+ */
 export function splitRouterName(name: string) {
   const names = name.split(PAGE_DEGREE_SPLITTER)
 
