@@ -5,7 +5,6 @@ import {
   transformPageGlobToRouterFile,
   transformRouterEntriesToTrees,
   transformRouterFilesToMaps,
-  transformRouterMapsToEntries,
   transformRouteTreeToElegantConstRoute,
 } from '../transform'
 import { countSlash } from '../utils'
@@ -25,12 +24,10 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
   // 将页面路由转换为路由文件信息
   const files = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
 
-  const maps = transformRouterFilesToMaps(files, ctx.options)
-
-  const entries = transformRouterMapsToEntries(maps)
+  const maps = transformRouterFilesToMaps(files)
 
   // 将路由条目转换为路由树
-  const trees = transformRouterEntriesToTrees(entries, maps, files)
+  const trees = transformRouterEntriesToTrees(maps, files)
 
   // 将路由树转换为路由结构
   let routes = trees.map(tree => transformRouteTreeToElegantConstRoute(tree, ctx.options))
@@ -53,8 +50,10 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
  * @returns 生成的客户端代码字符串
  */
 async function resolveReactRoutes(ctx: PageContext) {
-  const finalRoutes = await computeReactRoutes(ctx) // 计算路由
-  let client = generateClientCode(finalRoutes, ctx.options) // 生成客户端代码
+  // 计算路由
+  const finalRoutes = await computeReactRoutes(ctx)
+  // 生成客户端代码 (就是直接生成文件,里面填充需要的代码)
+  let client = generateClientCode(finalRoutes, ctx.options)
   // 调用用户自定义的客户端代码生成后处理函数
   client = (await ctx.options.onClientGenerated?.(client)) || client
   return client
@@ -110,7 +109,7 @@ export function reactResolver(): PageResolver {
       component: path => `React.createElement(${path})`,
       // 动态导入函数：将路径转换为 React.lazy 包装的动态导入
       dynamicImport: path => `React.lazy(() => import("${path}"))`,
-      // 最终代码处理：添加 React 导入语句
+      // 最终代码处理：只添加 React 导入，不添加类型导入
       final: code => `import React from "react";\n${code}`,
     },
   }

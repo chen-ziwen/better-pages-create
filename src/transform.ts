@@ -3,7 +3,6 @@ import type {
   ConstRoute,
   ResolvedOptions,
   RouterFile,
-  RouterNamePathEntry,
   RouterNamePathMap,
   RouterTree,
 } from './types'
@@ -89,7 +88,7 @@ export function transformRouterNameToPath(name: string) {
 /**
  * 将路由文件转换为名称路径映射
  */
-export function transformRouterFilesToMaps(files: RouterFile[], options: ResolvedOptions) {
+export function transformRouterFilesToMaps(files: RouterFile[]) {
   const maps = new Map<string, string | null>()
 
   for (const { routeName, routePath } of files) {
@@ -97,11 +96,7 @@ export function transformRouterFilesToMaps(files: RouterFile[], options: Resolve
 
     for (const name of names) {
       if (!maps.has(name)) {
-        const isSameName = name === routeName
-        const itemRouteName = isSameName ? name : options.routeNameTransformer(name)
-        const itemRoutePath = isSameName ? routePath : options.routePathTransformer(itemRouteName, transformRouterNameToPath(name))
-
-        maps.set(itemRouteName, itemRoutePath)
+        maps.set(name, routePath)
       }
     }
   }
@@ -120,12 +115,13 @@ export function transformRouterMapsToEntries(maps: RouterNamePathMap) {
  * 将条目转换为路由树
  */
 export function transformRouterEntriesToTrees(
-  entries: RouterNamePathEntry[],
   maps: RouterNamePathMap,
   files: RouterFile[],
 ) {
   // 构建路由层级关系映射
   const routeHierarchy = new Map<string, Set<string>>()
+
+  const entries = Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
 
   entries.forEach(([routeName]) => {
     const parts = routeName.split(PAGE_DEGREE_SPLITTER)
@@ -185,6 +181,7 @@ export function transformRouterEntriesToTrees(
     if (notFoundPath) {
       NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
+
     routes.push(NOT_FOUND_ROUTE)
 
     return newTrees
@@ -195,6 +192,7 @@ export function transformRouterEntriesToTrees(
     NOT_FOUND_ROUTE.matched = notFoundPath.matched
   }
   trees.push(NOT_FOUND_ROUTE)
+
   return trees
 }
 
@@ -257,18 +255,18 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
       break
 
     if (glob.endsWith('layout.tsx')) {
-      matched.layout = importAliasPath // 使用别名路径
+      matched.layout = importAliasPath
     }
     else if (glob.endsWith('index.tsx') || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
       if (!isRouteGroup(routeName)) {
-        matched.index = importAliasPath // 使用别名路径
+        matched.index = importAliasPath
       }
     }
     else if (glob.endsWith('loading.tsx')) {
-      matched.loading = importAliasPath // 使用别名路径
+      matched.loading = importAliasPath
     }
     else if (glob.endsWith('error.tsx')) {
-      matched.error = importAliasPath // 使用别名路径
+      matched.error = importAliasPath
     }
   }
 

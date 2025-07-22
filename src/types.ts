@@ -184,18 +184,6 @@ interface Options {
   resolver: InternalPageResolvers | PageResolver
 
   /**
-   * 路由名称转换器
-   * 允许用户自定义修改生成的路由名称
-   */
-  routeNameTransformer: (name: string) => string
-
-  /**
-   * 路由路径转换器
-   * 允许用户自定义修改生成的路由路径
-   */
-  routePathTransformer: (transformedName: string, path: string | null) => string | null
-
-  /**
    * 扩展路由记录的函数
    * 允许用户自定义修改生成的路由对象
    */

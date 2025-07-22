@@ -22,8 +22,10 @@ export default defineConfig({
       },
       // 路由生成后的回调
       onRoutesGenerated(routes) {
-        console.log('Generated routes:', JSON.stringify(routes, null, 2))
         return routes
+      },
+      onClientGenerated(clientCode) {
+        return clientCode
       },
     }),
   ],
