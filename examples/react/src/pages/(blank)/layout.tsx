@@ -1,13 +1,9 @@
-import type { ReactNode } from 'react'
+import { Outlet } from 'react-router'
 
-interface LayoutProps {
-  children: ReactNode
-}
-
-export default function BlankLayout({ children }: LayoutProps) {
+export default function BlankLayout() {
   return (
     <div>
-      {children}
+      <Outlet></Outlet>
     </div>
   )
 }

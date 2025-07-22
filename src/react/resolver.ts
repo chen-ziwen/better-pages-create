@@ -52,10 +52,11 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
 async function resolveReactRoutes(ctx: PageContext) {
   // 计算路由
   const finalRoutes = await computeReactRoutes(ctx)
-  // 生成客户端代码
+  // 生成客户端代码 - 传递 options 参数
   let client = generateReactClientCode(finalRoutes, ctx.options)
   // 调用用户自定义的客户端代码生成后处理函数
   client = (await ctx.options.onClientGenerated?.(client)) || client
+
   return client
 }
 
@@ -83,7 +84,7 @@ export function reactResolver(): PageResolver {
     },
 
     /**
-     * 解析路由
+     * 通过客户端代码解析生成真正的路由结构
      * @param ctx - 页面上下文
      * @returns 生成的路由代码字符串
      */
@@ -92,25 +93,12 @@ export function reactResolver(): PageResolver {
     },
 
     /**
-     * 获取计算后的路由
+     * 获取计算后的伪路由数据
      * @param ctx - 页面上下文
      * @returns 计算后的路由对象数组
      */
     async getComputedRoutes(ctx) {
       return computeReactRoutes(ctx)
-    },
-
-    /**
-     * 字符串化配置
-     * 定义如何将路由转换为 React 代码
-     */
-    stringify: {
-      // 组件渲染函数：将路径转换为 React.createElement 调用
-      component: path => `React.createElement(${path})`,
-      // 动态导入函数：将路径转换为 React.lazy 包装的动态导入
-      dynamicImport: path => `React.lazy(() => import("${path}"))`,
-      // 最终代码处理：只添加 React 导入，不添加类型导入
-      final: code => `import React from "react";\n${code}`,
     },
   }
 }

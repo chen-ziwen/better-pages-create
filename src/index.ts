@@ -73,7 +73,7 @@ function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
         }
       }
 
-      return null // 不处理其他模块
+      return null
     },
   }
 }

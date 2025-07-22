@@ -1,8 +1,12 @@
-export default function HomePage() {
+import { Navigate } from 'react-router-dom'
+
+function Index() {
   return (
-    <div>
-      <h1>首页</h1>
-      <p>欢迎来到首页</p>
-    </div>
+    <Navigate
+      replace
+      to="/home"
+    />
   )
 }
+
+export default Index
