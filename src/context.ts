@@ -1,8 +1,3 @@
-/**
- * 页面上下文模块
- * 管理页面文件的发现、路由生成和热模块替换
- */
-
 import type { Logger, ViteDevServer } from 'vite'
 import type { PageOptions, ResolvedOptions, UserOptions } from './types'
 import { join, resolve } from 'node:path'
@@ -12,10 +7,6 @@ import { getPageFiles } from './files'
 import { resolveOptions } from './options'
 import { debug, invalidatePagesModule, isTarget } from './utils'
 
-/**
- * 页面路由接口
- * 表示单个页面的路由信息
- */
 export interface PageRoute {
   path: string // 文件系统路径
   route: string // 路由路径
@@ -24,7 +15,6 @@ export interface PageRoute {
 }
 
 /**
- * 页面上下文类
  * 核心类，负责管理页面发现、路由生成和开发服务器集成
  */
 export class PageContext {
@@ -62,8 +52,9 @@ export class PageContext {
    * @param server - Vite 开发服务器实例
    */
   setupViteServer(server: ViteDevServer) {
+    // 如果是同一个服务器实例，直接返回
     if (this.mServer === server) {
-      return // 如果是同一个服务器实例，直接返回
+      return
     }
 
     this.mServer = server
@@ -79,8 +70,11 @@ export class PageContext {
     // 监听文件删除事件
     watcher.on('unlink', async (path) => {
       path = slash(path) // 标准化路径
-      if (!isTarget(path, this.options)) // 检查是否为目标文件
+
+      if (!isTarget(path, this.options)) {
         return
+      }
+
       await this.removePage(path) // 移除页面
       this.onUpdate() // 触发更新
     })

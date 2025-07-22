@@ -1,204 +1,58 @@
-import type { Awaitable } from '@antfu/utils' // 可等待类型（Promise 或同步值）
+import type { Awaitable } from '@antfu/utils'
 import type { RouteObject } from 'react-router-dom'
-import type { PageContext } from './context' // 页面上下文类型
+import type { PageContext } from './context'
 
-/**
- * 可选属性工具类型
- * 将类型 T 中的指定属性 K 变为可选
- */
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 
-/**
- * 解析后的 JSX 接口
- * 包含 JSX 代码的值和位置信息
- */
 export interface ParsedJSX {
-  value: string // JSX 代码字符串
+  value: string
   loc: {
     start: {
-      line: number // 起始行号
+      line: number
     }
   }
 }
 
-/**
- * 自定义块类型
- * 用于存储任意的自定义配置数据
- */
 export type CustomBlock = Record<string, any>
 
-/**
- * 内置页面解析器类型
- * 支持的框架类型
- */
 export type InternalPageResolvers = 'react'
 
-/**
- * 页面选项接口
- * 定义单个页面目录的配置选项
- */
 export interface PageOptions {
-  /**
-   * 页面基础目录
-   * @default 'src/pages'
-   */
   dir: string
-  /**
-   * 页面基础路由
-   * 用于设置该目录下页面的路由前缀
-   */
   baseRoute: string
-  /**
-   * 页面文件匹配模式（可选）
-   * @example `**\/*.page.vue`
-   */
   filePattern?: string
 }
 
-/**
- * 页面解析器接口
- * 定义页面解析器必须实现的方法和可选功能
- */
 export interface PageResolver {
-  /**
-   * 解析模块 ID 列表
-   * 返回该解析器支持的模块标识符
-   */
   resolveModuleIds: () => string[]
-
-  /**
-   * 解析支持的文件扩展名
-   * 返回该解析器能处理的文件扩展名列表
-   */
   resolveExtensions: () => string[]
-
-  /**
-   * 解析路由
-   * 根据页面上下文生成路由代码字符串
-   */
   resolveRoutes: (ctx: PageContext) => Awaitable<string>
-
-  /**
-   * 获取计算后的路由
-   * 返回处理后的路由对象数组
-   */
   getComputedRoutes: (ctx: PageContext) => Awaitable<ConstRoute[]>
 
-  /**
-   * 字符串化选项（可选）
-   * 定义如何将路由转换为代码字符串
-   */
   stringify?: {
-    /**
-     * 动态导入字符串化函数
-     * 定义如何生成动态导入语句
-     */
     dynamicImport?: (importPath: string) => string
-
-    /**
-     * 组件字符串化函数
-     * 定义如何生成组件引用代码
-     */
     component?: (importName: string) => string
-
-    /**
-     * 最终代码处理函数
-     * 对生成的完整代码进行最后的处理
-     */
     final?: (code: string) => string
   }
 
-  /**
-   * 热模块替换选项（可选）
-   * 定义文件变化时的处理逻辑
-   */
   hmr?: {
-    /**
-     * 文件添加时的处理函数
-     */
     added?: (ctx: PageContext, path: string) => Awaitable<void>
-
-    /**
-     * 文件删除时的处理函数
-     */
     removed?: (ctx: PageContext, path: string) => Awaitable<void>
-
-    /**
-     * 文件修改时的处理函数
-     */
     changed?: (ctx: PageContext, path: string) => Awaitable<void>
   }
 }
 
-/**
- * 插件选项接口
- * 定义插件的完整配置选项
- */
 interface Options {
-  /**
-   * 搜索页面组件的目录路径
-   * 可以是单个字符串或字符串/PageOptions 对象的数组
-   * @default 'src/pages'
-   */
   dirs: string | (string | PageOptions)[]
-
-  /**
-   * 页面组件的有效文件扩展名
-   * @default ['vue', 'js']
-   */
   extensions: string[]
-
-  /**
-   * 项目别名
-   */
   alias: Record<string, string>
-
-  /**
-   * 解析页面时要排除的路径 glob 模式列表
-   */
   exclude: string[]
-
-  /**
-   * 生成的路由名称的分隔符
-   * @default '_'
-   */
   routeNameSeparator: string
-
-  /**
-   * 路由路径的大小写敏感性
-   * @default false
-   */
   caseSensitive: boolean
-
-  /**
-   * 路由导入的模块 ID
-   * @default '~pages'
-   */
   moduleId: string
-
-  /**
-   * 生成路由的解析器
-   * 可以是内置解析器名称或自定义解析器对象
-   * @default 'auto detect'
-   */
   resolver: InternalPageResolvers | PageResolver
-
-  /**
-   * 扩展路由记录的函数
-   * 允许用户自定义修改生成的路由对象
-   */
   extendRoute?: (route: ConstRoute, parent: ConstRoute | undefined) => ConstRoute | void
-
-  /**
-   * 自定义生成的路由
-   * 在路由生成完成后调用，允许用户进一步处理路由数组
-   */
   onRoutesGenerated?: (routes: ConstRoute[]) => Awaitable<ConstRoute[] | void>
-
-  /**
-   * 自定义生成的客户端代码
-   * 在客户端代码生成完成后调用，允许用户修改最终的代码字符串
-   */
   onClientGenerated?: (clientCode: string) => Awaitable<string | void>
 }
 

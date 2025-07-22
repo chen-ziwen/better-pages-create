@@ -1,11 +1,11 @@
-import type { PageRoute } from './context'
+import type { PageRoute } from '../context'
 import type {
   ConstRoute,
   ResolvedOptions,
   RouterFile,
   RouterNamePathMap,
   RouterTree,
-} from './types'
+} from '../types'
 import { join } from 'node:path'
 import { slash } from '@antfu/utils'
 import {
@@ -18,8 +18,8 @@ import {
   PATH_SPLITTER,
   ROUTE_NAME_WITH_PARAMS_PATTERN,
   SPLAT_RE,
-} from './constants'
-import { isRouteGroup, splitRouterName } from './utils'
+} from '../constants'
+import { isRouteGroup, splitRouterName } from '../utils'
 
 /**
  * 将页面 glob 路径转换为路由文件信息
@@ -33,8 +33,9 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
   // 处理路径别名
   let importAliasPath = importPath
   for (const [aliasKey, dir] of Object.entries(alias)) {
-    if (importPath.startsWith(dir)) {
-      importAliasPath = importAliasPath.replace(dir, aliasKey)
+    const normalizedDir = slash(dir)
+    if (importPath.startsWith(normalizedDir)) {
+      importAliasPath = importPath.replace(normalizedDir, aliasKey)
       break
     }
   }

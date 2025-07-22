@@ -1,17 +1,15 @@
-import type { ReactNode } from 'react'
+import { Outlet } from 'react-router'
 
-interface LayoutProps {
-  children: ReactNode
-}
-
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout() {
   return (
     <html>
       <body>
         <header>
           <nav>全局导航</nav>
         </header>
-        <main>{children}</main>
+        <main>
+          <Outlet />
+        </main>
         <footer>全局页脚</footer>
       </body>
     </html>

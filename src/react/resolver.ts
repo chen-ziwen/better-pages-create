@@ -1,13 +1,13 @@
 import type { PageContext } from '../context'
 import type { ConstRoute, PageResolver } from '../types'
-import { generateClientCode } from '../stringify'
+import { countSlash } from '../utils'
+import { generateReactClientCode } from './stringify'
 import {
   transformPageGlobToRouterFile,
   transformRouterEntriesToTrees,
   transformRouterFilesToMaps,
   transformRouteTreeToElegantConstRoute,
-} from '../transform'
-import { countSlash } from '../utils'
+} from './transform'
 
 /**
  * 计算 React 路由
@@ -52,8 +52,8 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
 async function resolveReactRoutes(ctx: PageContext) {
   // 计算路由
   const finalRoutes = await computeReactRoutes(ctx)
-  // 生成客户端代码 (就是直接生成文件,里面填充需要的代码)
-  let client = generateClientCode(finalRoutes, ctx.options)
+  // 生成客户端代码
+  let client = generateReactClientCode(finalRoutes, ctx.options)
   // 调用用户自定义的客户端代码生成后处理函数
   client = (await ctx.options.onClientGenerated?.(client)) || client
   return client

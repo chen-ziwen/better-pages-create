@@ -70,7 +70,7 @@ export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.tsx$/
 export const NOT_FOUND_ROUTE = {
   fullPath: '*',
   importPath: '',
-  matched: { index: '$404' } as Record<string, string>, // 需要特殊处理
+  matched: { index: '404' } as Record<string, string>, // 需要特殊处理
   routeName: 'notFound',
   routePath: '*',
 }

@@ -4,7 +4,7 @@ import process from 'node:process'
 import { slash, toArray } from '@antfu/utils'
 import { MODULE_IDS } from './constants'
 import { getPageDirs } from './files'
-import { reactResolver } from './resolvers'
+import { reactResolver } from './react'
 
 /**
  * 解析页面目录配置
