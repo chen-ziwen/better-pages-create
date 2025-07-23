@@ -86,7 +86,6 @@ export default function RootLayout() {
         <p>🎉 Better Pages Create - 让路由管理变得简单</p>
         <p style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '0.5rem' }}>
           当前路径:
-          {' '}
           <code>{location.pathname}</code>
         </p>
       </footer>

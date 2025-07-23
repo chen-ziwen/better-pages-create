@@ -129,9 +129,9 @@ export default function HomePage() {
         <div style={{ textAlign: 'center' }}>
           <h3 style={{ marginBottom: '1.5rem', color: '#667eea' }}>🎯 快速体验</h3>
           <div className="nav-links" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/login" className="nav-link">🔐 认证布局</Link>
-            <Link to="/stats" className="nav-link">📊 仪表板</Link>
-            <Link to="/blog/hello-world" className="nav-link">📝 动态路由</Link>
+            <Link to="/login" className="nav-link" style={{ color: '#6976DE' }}>🔐 认证布局</Link>
+            <Link to="/stats" className="nav-link" style={{ color: '#6976DE' }}>📊 仪表板</Link>
+            <Link to="/blog/hello-world" className="nav-link" style={{ color: '#6976DE' }}>📝 动态路由</Link>
           </div>
         </div>
       </div>

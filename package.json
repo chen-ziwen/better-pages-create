@@ -43,9 +43,11 @@
   },
   "dependencies": {
     "@types/debug": "^4.1.12",
+    "@types/js-yaml": "^4.0.9",
     "debug": "^4.4.1",
     "dequal": "^2.0.3",
     "extract-comments": "^1.1.0",
+    "js-yaml": "^4.1.0",
     "local-pkg": "^1.1.1",
     "micromatch": "^4.0.8",
     "picocolors": "^1.1.1",

@@ -44,12 +44,10 @@ export default function BlogPostPage() {
           <h4>🎯 动态路由演示</h4>
           <p>
             <strong>文件路径：</strong>
-            {' '}
             <code>blog/[slug].tsx</code>
           </p>
           <p>
             <strong>当前参数：</strong>
-            {' '}
             <code>
               slug = "
               {slug}
@@ -58,7 +56,6 @@ export default function BlogPostPage() {
           </p>
           <p>
             <strong>URL 模式：</strong>
-            {' '}
             <code>/blog/:slug</code>
           </p>
         </div>

@@ -31,31 +31,6 @@ export default function BlogIndexPage() {
         <h1 className="page-title">📝 博客文章</h1>
         <p className="page-subtitle">探索动态路由的强大功能</p>
 
-        <div className="route-demo" style={{ marginBottom: '2rem' }}>
-          <h4>🎯 动态路由说明</h4>
-          <p><strong>文件结构：</strong></p>
-          <ul style={{ textAlign: 'left', marginTop: '0.5rem' }}>
-            <li>
-              <code>blog/index.tsx</code>
-              {' '}
-              →
-              {' '}
-              <code>/blog</code>
-              {' '}
-              (博客列表)
-            </li>
-            <li>
-              <code>blog/[slug].tsx</code>
-              {' '}
-              →
-              {' '}
-              <code>/blog/:slug</code>
-              {' '}
-              (文章详情)
-            </li>
-          </ul>
-        </div>
-
         <div style={{ display: 'grid', gap: '1.5rem' }}>
           {posts.map(post => (
             <article
@@ -79,17 +54,12 @@ export default function BlogIndexPage() {
                 </h2>
                 <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>
                   📅
-                  {' '}
                   {post.date}
-                  {' '}
                   • 🏷️
-                  {' '}
                   {post.tags.join(', ')}
                 </div>
               </header>
-
               <p style={{ marginBottom: '1.5rem', opacity: 0.9 }}>{post.excerpt}</p>
-
               <Link
                 to={`/blog/${post.slug}`}
                 style={{
