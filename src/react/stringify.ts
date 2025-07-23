@@ -1,27 +1,8 @@
 import type { ConstRoute, ResolvedOptions } from '../types'
 import { stringifyRoutes } from '../stringify'
-
-function generateImportMap(routes: ConstRoute[], type: 'layout' | 'index' | 'loading' | 'error'): string {
-  const imports: string[] = []
-
-  function collectImports(routeList: any[]) {
-    for (const route of routeList) {
-      if (route.matched?.[type]) {
-        const importPath = route.matched[type]
-        imports.push(`"${route.name}": () => import("${importPath}")`)
-      }
-      if (route.children) {
-        collectImports(route.children)
-      }
-    }
-  }
-
-  collectImports(routes)
-  return imports.join(',\n')
-}
+import { generateImportMap } from '../utils'
 
 export function generateReactClientCode(routes: ConstRoute[], options: ResolvedOptions) {
-  // 使用 stringifyRoutes 处理函数序列化
   const { imports, stringRoutes } = stringifyRoutes(routes, options)
 
   const code = `
@@ -85,11 +66,11 @@ export function transformRouteToReactRoute(route) {
 
   const reactRoute = {
     children: [],
-    HydrateFallback: matched.loading ? loadings[matched.loading] : undefined,
+    HydrateFallback: loadings[matched.loading],
     id: name,
     handle: handle,
     lazy: async () => {
-      const ErrorBoundary = matched.error ? errors[matched.error] : undefined;
+      const ErrorBoundary = errors[matched.error];
       return {
         ErrorBoundary: ErrorBoundary?.default,
         ...(await getConfig())
@@ -106,7 +87,7 @@ export function transformRouteToReactRoute(route) {
         handle: handle,
         index: true,
         lazy: async () => {
-          const ErrorBoundary = matched.error ? errors[matched.error] : undefined;
+          const ErrorBoundary = errors[matched.error];
           return {
             ErrorBoundary: ErrorBoundary?.default,
             ...(await getConfig(true))

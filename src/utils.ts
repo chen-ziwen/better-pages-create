@@ -1,5 +1,5 @@
 import type { ModuleNode, ViteDevServer } from 'vite'
-import type { ResolvedOptions } from './types'
+import type { ConstRoute, PagesType, ResolvedOptions } from './types'
 import { resolve } from 'node:path'
 import { URLSearchParams } from 'node:url'
 import { slash } from '@antfu/utils'
@@ -141,4 +141,29 @@ export function splitRouterName(name: string) {
     prev.push(next)
     return prev
   }, [] as string[])
+}
+
+/**
+ * 生成导入映射，将路由匹配的页面文件导入为函数。
+ * @param routes - 路由数组
+ * @param type - 页面类型
+ * @returns 导入映射字符串
+ */
+export function generateImportMap(routes: ConstRoute[], type: PagesType): string {
+  const imports: string[] = []
+
+  function collectImports(routeList: any[]) {
+    for (const route of routeList) {
+      if (route.matched?.[type]) {
+        const importPath = route.matched[type]
+        imports.push(`"${route.name}": () => import("${importPath}")`)
+      }
+      if (route.children) {
+        collectImports(route.children)
+      }
+    }
+  }
+
+  collectImports(routes)
+  return imports.join(',\n')
 }

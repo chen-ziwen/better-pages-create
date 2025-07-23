@@ -62,8 +62,9 @@ function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
       } = parsePageRequest(id)
 
       // 加载页面路由模块
-      if (moduleId === MODULE_ID_VIRTUAL && pageId && ctx.options.moduleIds.includes(pageId))
+      if (moduleId === MODULE_ID_VIRTUAL && pageId && ctx.options.moduleIds.includes(pageId)) {
         return ctx.resolveRoutes() // 返回生成的路由代码
+      }
 
       // 加载路由块模块
       if (id === ROUTE_BLOCK_ID_VIRTUAL) {

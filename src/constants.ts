@@ -65,7 +65,7 @@ export const PAGE_FILE_NAME_PATTERN = /^[0-9a-zA-Z][0-9a-zA-Z-]+[0-9a-zA-Z]\.[a-
 
 export const UPPERCASE_LETTER_PATTERN = /[A-Z]/g
 
-export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.tsx$/
+export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.(.+)$/
 
 export const NOT_FOUND_ROUTE = {
   fullPath: '*',

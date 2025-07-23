@@ -42,9 +42,7 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
 
   // 解析目录和文件
   const [file, ...dirs] = glob.split(PATH_SPLITTER).reverse()
-  const filteredDirs = dirs
-    .filter(dir => !dir.startsWith(PAGE_DEGREE_SPLITTER))
-    .reverse()
+  const filteredDirs = dirs.filter(dir => !dir.startsWith(PAGE_DEGREE_SPLITTER)).reverse()
 
   // 处理特殊文件名
   if (PAGE_FILE_NAME_WITH_SQUARE_BRACKETS_PATTERN.test(file)) {
@@ -62,6 +60,7 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
     importPath,
     routeName,
     routePath,
+    suffix,
   } as RouterFile
 }
 
@@ -179,6 +178,7 @@ export function transformRouterEntriesToTrees(
     const routes = newTrees[0].children
 
     const notFoundPath = routes.find(item => item?.routeName === '404')
+
     if (notFoundPath) {
       NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
@@ -225,7 +225,17 @@ function buildConstRoute(
   // 调用扩展路由函数
   if (extendRoute) {
     const extendedRoute = extendRoute(route, parent)
-    extendedRoute && Object.assign(route, extendedRoute)
+    if (extendedRoute) {
+      // 路由组不支持设置 handle
+      if (isRouteGroup(routeName) && extendedRoute.handle) {
+        const { handle, ...rest } = extendedRoute
+        Object.assign(route, rest)
+        route.handle = null
+      }
+      else {
+        Object.assign(route, extendedRoute)
+      }
+    }
   }
 
   // 递归处理子路由
@@ -250,23 +260,24 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
   const endIndex = Math.min(startIndex + 4, data.length)
 
   for (let i = startIndex; i < endIndex; i++) {
-    const { importAliasPath, routeName, glob } = data[i]
+    const { importAliasPath, routeName, glob, suffix } = data[i]
 
-    if (routeName !== currentName)
+    if (routeName !== currentName) {
       break
+    }
 
-    if (glob.endsWith('layout.tsx')) {
+    if (glob.endsWith(`layout.${suffix}`)) {
       matched.layout = importAliasPath
     }
-    else if (glob.endsWith('index.tsx') || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
+    else if (glob.endsWith(`index.${suffix}`) || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
       if (!isRouteGroup(routeName)) {
         matched.index = importAliasPath
       }
     }
-    else if (glob.endsWith('loading.tsx')) {
+    else if (glob.endsWith(`loading.${suffix}`)) {
       matched.loading = importAliasPath
     }
-    else if (glob.endsWith('error.tsx')) {
+    else if (glob.endsWith(`error.${suffix}`)) {
       matched.error = importAliasPath
     }
   }

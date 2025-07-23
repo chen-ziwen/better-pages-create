@@ -170,7 +170,6 @@ export class PageContext {
    * 当页面发生变化时，使相关模块失效并触发页面重新加载
    */
   onUpdate() {
-    // 如果没有开发服务器，直接返回
     if (!this.mServer) {
       return
     }
@@ -196,12 +195,8 @@ export class PageContext {
    * 使用 glob 模式搜索所有页面目录中的页面文件
    */
   async searchGlob() {
-    // 遍历所有页面目录，获取文件列表
     const pageDirFiles = this.options.dirs.map((page) => {
-      // 页面目录绝对路径
       const pagesDirPath = slash(resolve(this.options.root, page.dir))
-
-      // 获取页面文件
       const files = getPageFiles(pagesDirPath, this.options, page)
       debug.search(page.dir, files)
       return {
@@ -210,7 +205,6 @@ export class PageContext {
       }
     })
 
-    // 将所有找到的页面文件添加到路由映射表
     for (const page of pageDirFiles) {
       await this.addPage(page.files, page)
     }

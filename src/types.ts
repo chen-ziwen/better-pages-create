@@ -79,6 +79,7 @@ export interface RouterFile {
   importPath: string | null
   routeName: string
   routePath: string
+  suffix: string
 }
 
 export interface RouterOption {
@@ -114,3 +115,5 @@ export type ConstRoute = Omit<RouteObject, 'children' | 'id' | 'path'> & {
   name: string
   path?: string | null
 }
+
+export type PagesType = 'layout' | 'index' | 'loading' | 'error'
