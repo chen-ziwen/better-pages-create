@@ -93,13 +93,6 @@ export function transformRouterFilesToMaps(files: RouterFile[]) {
 }
 
 /**
- * 将映射转换为条目数组
- */
-export function transformRouterMapsToEntries(maps: RouterNamePathMap) {
-  return Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
-}
-
-/**
  * 将条目转换为路由树
  */
 export function transformRouterEntriesToTrees(
@@ -188,14 +181,7 @@ export function transformRouterEntriesToTrees(
 /**
  * 转换路由树为常量路由
  */
-export function transformRouteTreeToElegantConstRoute(tree: RouterTree, options: ResolvedOptions) {
-  return buildConstRoute(tree, options)
-}
-
-/**
- * 构建常量路由（统一处理函数）
- */
-function buildConstRoute(
+export function transformRouteTreeToElegantConstRoute(
   tree: RouterTree,
   options: ResolvedOptions,
   parent?: ConstRoute,
@@ -214,7 +200,6 @@ function buildConstRoute(
   if (extendRoute) {
     const extendedRoute = extendRoute(route, parent)
     if (extendedRoute) {
-      // 路由组不支持设置 handle
       if (isRouteGroup(routeName) && extendedRoute.handle) {
         const { handle, ...rest } = extendedRoute
         Object.assign(route, rest)
@@ -226,9 +211,8 @@ function buildConstRoute(
     }
   }
 
-  // 递归处理子路由
-  if (children.length > 0) {
-    route.children = children.map(child => buildConstRoute(child, options, route))
+  if (children.length) {
+    route.children = children.map(child => transformRouteTreeToElegantConstRoute(child, options, route))
   }
 
   return route

@@ -32,7 +32,7 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
   // 将路由树转换为伪路由结构
   let routes = trees.map(tree => transformRouteTreeToElegantConstRoute(tree, ctx.options))
 
-  // 可以对整体的路由进行处理
+  // 可以对整体的伪路由进行处理
   if (onRoutesGenerated) {
     const result = await onRoutesGenerated(routes)
     if (result) {
