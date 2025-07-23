@@ -178,7 +178,6 @@ export function transformRouterEntriesToTrees(
     const routes = newTrees[0].children
 
     const notFoundPath = routes.find(item => item?.routeName === '404')
-
     if (notFoundPath) {
       NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
@@ -192,6 +191,7 @@ export function transformRouterEntriesToTrees(
   if (notFoundPath) {
     NOT_FOUND_ROUTE.matched = notFoundPath.matched
   }
+
   trees.push(NOT_FOUND_ROUTE)
 
   return trees

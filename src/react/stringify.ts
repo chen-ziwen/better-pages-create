@@ -25,20 +25,13 @@ const errors = {
 ${generateImportMap(routes, 'error')}
 };
 
-/**
- * transform const routes to react routes
- */
 export function transformRoutesToReactRoutes(routes) {
   return routes.flatMap(route => transformRouteToReactRoute(route));
 }
 
-/**
- * transform single route to react route
- */
 export function transformRouteToReactRoute(route) {
   const { children, matched, name, path, handle } = route;
 
-  // Convert route config
   function convertConfig(m) {
     const { action, loader, shouldRevalidate, default: Component } = m;
     return {
@@ -49,11 +42,16 @@ export function transformRouteToReactRoute(route) {
     };
   }
 
-  // Get config for the route
   async function getConfig(index = false) {
     if (matched.layout && !index) {
       const config = await layouts[name]();
       return convertConfig(config);
+    }
+
+    let pageName = name;
+
+    if (pageName === "notFound") {
+      pageName = "404";
     }
 
     if (matched.index && (!children?.length || index)) {
