@@ -15,7 +15,7 @@ export default function AuthLayout() {
 
         <div className="route-demo">
           <strong>路由组特点：</strong>
-          <ul style={{ textAlign: 'left', marginTop: '0.5rem', paddingLeft: '1rem' }}>
+          <ul style={{ textAlign: 'left', marginTop: '0.5rem' }}>
             <li>文件夹名用括号包围</li>
             <li>不会出现在 URL 中</li>
             <li>用于组织相关页面</li>

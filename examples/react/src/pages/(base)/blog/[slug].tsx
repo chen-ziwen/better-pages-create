@@ -87,7 +87,7 @@ export default function BlogPostPage() {
             }}
             >
               <h3>💡 动态路由的优势</h3>
-              <ul style={{ marginTop: '1rem', paddingLeft: '1.5rem' }}>
+              <ul style={{ marginTop: '1rem' }}>
                 <li>URL 参数自动解析为组件 props</li>
                 <li>
                   支持多个参数：

@@ -16,27 +16,8 @@ export default function HomePage() {
       description: '使用方括号创建参数化路由',
       examples: [
         { file: 'blog/[slug].tsx', url: '/blog/hello-world', desc: '博客文章页面' },
-        { file: 'user/[id].tsx', url: '/user/123', desc: '用户详情页面' },
       ],
       color: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-    },
-    {
-      title: '🌟 Splat 路由 (Catch-all)',
-      description: '使用 [...param] 捕获所有子路径',
-      examples: [
-        { file: 'docs/[...path].tsx', url: '/docs/guide/intro', desc: '文档系统' },
-        { file: 'files/[...segments].tsx', url: '/files/2024/images', desc: '文件浏览器' },
-      ],
-      color: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-    },
-    {
-      title: '🔧 可选参数 (Optional)',
-      description: '使用 -[param] 创建可选参数路由',
-      examples: [
-        { file: 'shop/-[category].tsx', url: '/shop 或 /shop/electronics', desc: '商店分类' },
-        { file: 'posts/-[lang].tsx', url: '/posts 或 /posts/zh', desc: '多语言博客' },
-      ],
-      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
   ]
 
@@ -129,9 +110,9 @@ export default function HomePage() {
         <div style={{ textAlign: 'center' }}>
           <h3 style={{ marginBottom: '1.5rem', color: '#667eea' }}>🎯 快速体验</h3>
           <div className="nav-links" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/login" className="nav-link" style={{ color: '#6976DE' }}>🔐 认证布局</Link>
-            <Link to="/stats" className="nav-link" style={{ color: '#6976DE' }}>📊 仪表板</Link>
-            <Link to="/blog/hello-world" className="nav-link" style={{ color: '#6976DE' }}>📝 动态路由</Link>
+            <Link to="/login" className="nav-link">🔐 认证布局</Link>
+            <Link to="/stats" className="nav-link">📊 仪表板</Link>
+            <Link to="/blog/hello-world" className="nav-link">📝 动态路由</Link>
           </div>
         </div>
       </div>

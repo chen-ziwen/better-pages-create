@@ -26,9 +26,10 @@ export default function LoginPage() {
             fontSize: '1rem',
           }}
         />
-        <button
-          type="submit"
+        <Link
+          to="/home"
           style={{
+            textAlign: 'center',
             padding: '0.75rem',
             background: 'linear-gradient(135deg, #667eea, #764ba2)',
             color: 'white',
@@ -39,14 +40,8 @@ export default function LoginPage() {
           }}
         >
           登录
-        </button>
+        </Link>
       </form>
-
-      <p style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
-        还没有账号？
-        {' '}
-        <Link to="/register" style={{ color: '#667eea' }}>立即注册</Link>
-      </p>
     </div>
   )
 }

@@ -26,7 +26,7 @@ export default function DashboardLayout() {
 
           <div className="route-demo" style={{ marginTop: '2rem' }}>
             <strong>布局特点：</strong>
-            <ul style={{ fontSize: '0.8rem', marginTop: '0.5rem', paddingLeft: '1rem' }}>
+            <ul style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
               <li>共享头部和侧边栏</li>
               <li>子页面在主区域渲染</li>
               <li>保持导航状态</li>

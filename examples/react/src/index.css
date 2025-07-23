@@ -12,6 +12,19 @@ body {
   min-height: 100vh;
 }
 
+a {
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -33,7 +46,7 @@ body {
 }
 
 .nav-link {
-  color: white;
+  color: black;
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
