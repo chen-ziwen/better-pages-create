@@ -28,8 +28,9 @@ export const ROUTE_IMPORT_NAME = '__pages_import_$1__'
 
 /**
  * 匹配格式 (fileName) 或 (fileName)_ 替换为 ""
+ * 支持路径中的路由组，如 (auth)_login -> login
  */
-export const GROUP_RE = [/^\([^)]+\)_?$/g, ''] as const
+export const GROUP_RE = [/\([^)]+\)_?/g, ''] as const
 
 /**
  * 匹配格式 [...param] 替换为 *

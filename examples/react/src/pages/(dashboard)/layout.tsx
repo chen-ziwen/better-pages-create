@@ -22,8 +22,6 @@ export default function DashboardLayout() {
           <h3 style={{ color: 'white', marginBottom: '1rem' }}>导航菜单</h3>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <Link to="/stats" className="nav-link">📈 统计数据</Link>
-            <Link to="/dashboard" className="nav-link">🏠 仪表板</Link>
-            <Link to="/admin/reports" className="nav-link">📋 报表</Link>
           </nav>
 
           <div className="route-demo" style={{ marginTop: '2rem' }}>

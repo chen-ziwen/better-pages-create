@@ -28,26 +28,20 @@ export default function StatsPage() {
         <ul style={{ textAlign: 'left', marginTop: '1rem' }}>
           <li>
             <strong>URL 简洁：</strong>
-            {' '}
             <code>/stats</code>
-            {' '}
             而不是
-            {' '}
             <code>/dashboard/stats</code>
           </li>
           <li>
             <strong>布局共享：</strong>
-            {' '}
             自动继承仪表板布局
           </li>
           <li>
             <strong>组织清晰：</strong>
-            {' '}
             文件结构体现功能分组
           </li>
           <li>
             <strong>维护方便：</strong>
-            {' '}
             相关页面集中管理
           </li>
         </ul>

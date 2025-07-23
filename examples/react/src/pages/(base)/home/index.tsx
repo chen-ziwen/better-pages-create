@@ -132,9 +132,6 @@ export default function HomePage() {
             <Link to="/login" className="nav-link">🔐 认证布局</Link>
             <Link to="/stats" className="nav-link">📊 仪表板</Link>
             <Link to="/blog/hello-world" className="nav-link">📝 动态路由</Link>
-            <Link to="/docs/getting-started" className="nav-link">📚 Splat 路由</Link>
-            <Link to="/shop" className="nav-link">🛍️ 可选参数</Link>
-            <Link to="/admin/reports" className="nav-link">👨‍💼 嵌套路由</Link>
           </div>
         </div>
       </div>

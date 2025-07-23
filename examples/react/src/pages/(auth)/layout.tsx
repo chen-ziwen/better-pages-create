@@ -8,9 +8,7 @@ export default function AuthLayout() {
           <h2 style={{ color: '#667eea', marginBottom: '0.5rem' }}>🔐 认证布局</h2>
           <p style={{ color: '#666', fontSize: '0.9rem' }}>
             来自
-            {' '}
             <code>(auth)/layout.tsx</code>
-            {' '}
             - 路由组布局
           </p>
         </div>

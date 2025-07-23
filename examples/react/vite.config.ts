@@ -22,7 +22,6 @@ export default defineConfig({
       // 配置别名，与 vite 配置保持一致
       alias: {
         '@': 'src',
-        '~': '.',
       },
       // 扩展路由配置
       extendRoute(route) {

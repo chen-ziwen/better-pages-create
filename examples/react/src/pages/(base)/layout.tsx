@@ -5,13 +5,9 @@ export default function RootLayout() {
 
   const navItems = [
     { path: '/', label: '🏠 首页' },
-    { path: '/login', label: '🔐 登录' },
-    { path: '/register', label: '📝 注册' },
-    { path: '/stats', label: '📊 统计' },
     { path: '/blog', label: '📝 博客' },
-    { path: '/docs/getting-started', label: '📚 文档' },
-    { path: '/shop', label: '🛍️ 商店' },
-    { path: '/admin/reports', label: '👨‍💼 管理' },
+    { path: '/login', label: '🔐 登录（登录布局）' },
+    { path: '/stats', label: '📊 统计（统计布局）' },
   ]
 
   const getBreadcrumbs = () => {
