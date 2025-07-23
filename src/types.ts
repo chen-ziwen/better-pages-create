@@ -77,6 +77,7 @@ export interface RouterFile {
   routeName: string
   routePath: string | null
   suffix: string
+  handle?: Record<string, any> | null
 }
 
 export interface RouterOption {
@@ -95,6 +96,7 @@ export interface RouterTree {
   matched: Record<string, string>
   routeName: string
   routePath: string | null
+  handle?: Record<string, any> | null
 }
 
 export interface CustomRouteConfig {

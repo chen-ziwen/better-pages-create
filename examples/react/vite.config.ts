@@ -30,12 +30,12 @@ export default defineConfig({
       },
       // 路由生成后的回调
       onRoutesGenerated(routes) {
-        console.log('Generated routes:', routes)
+        // console.log('Generated routes:', routes)
         return routes
       },
       // 客户端代码生成后的回调
       onClientGenerated(clientCode) {
-        console.log('Generated client code length:', clientCode.length)
+        // console.log('Generated client code length:', clientCode.length)
         return clientCode
       },
     }),

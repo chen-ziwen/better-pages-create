@@ -1,3 +1,14 @@
+/**
+ * @handle {
+ *   "title": "首页",
+ *   "requiresAuth": false,
+ *   "const": true,
+ *   "meta": {
+ *     "description": "首页描述"
+ *   }
+ * }
+ */
+
 import { Link } from 'react-router'
 
 export default function HomePage() {

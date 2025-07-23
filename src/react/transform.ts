@@ -20,6 +20,7 @@ import {
   UNDERSCORE_RE,
 } from '../constants'
 import { isRouteGroup, splitRouterName } from '../utils'
+import { extractHandleFromFile } from './handle-extract'
 
 /**
  * 将页面 glob 路径转换为路由文件信息
@@ -42,13 +43,21 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute) {
 
   const routePath = transformRouterNameToPath(routeName)
 
+  // 解析 handle 元信息（仅对 index 文件）
+  let handle: Record<string, any> | null = null
+  if (file.startsWith(`index.${suffix}`)) {
+    handle = extractHandleFromFile(fullPath)
+  }
+
   return {
+    componentName: routeName,
     fullPath,
     glob,
     importPath,
     routeName,
     routePath,
     suffix,
+    handle,
   } as RouterFile
 }
 
@@ -123,12 +132,13 @@ export function transformRouterEntriesToTrees(
 
   // 构建树结构
   const buildTree = (routeName: string): RouterTree => {
-    const { fullPath, matched } = findMatchedFiles(files, routeName)
+    const { fullPath, matched, handle } = findMatchedFiles(files, routeName)
 
     const tree: RouterTree = {
       fullPath,
       matched,
       routeName,
+      handle,
       routePath: maps.get(routeName) || null,
     }
 
@@ -187,13 +197,13 @@ export function transformRouteTreeToElegantConstRoute(
   parent?: ConstRoute,
 ): ConstRoute {
   const { extendRoute } = options
-  const { children = [], matched, routeName, routePath } = tree
+  const { children = [], matched, routeName, routePath, handle: constHandle } = tree
 
   const route: ConstRoute = {
     matched,
     name: routeName,
     path: routePath,
-    handle: isRouteGroup(routeName) ? null : {},
+    handle: isRouteGroup(routeName) ? null : constHandle,
   }
 
   // 调用扩展路由函数
@@ -254,5 +264,5 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
     }
   }
 
-  return { fullPath: data[startIndex].fullPath, matched }
+  return { fullPath: data[startIndex].fullPath, matched, handle: data[startIndex].handle }
 }

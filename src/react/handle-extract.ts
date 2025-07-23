@@ -1,0 +1,120 @@
+import { readFileSync } from 'node:fs'
+// @ts-expect-error - extract-comments 没有类型定义
+import extractComments from 'extract-comments'
+
+/**
+ * 从文件注释中提取 handle 元信息
+ * 支持的注释格式：
+ * @handle {"title": "页面标题", "requiresAuth": true}
+ * 或者多行格式：
+ * @handle {
+ *   "title": "页面标题",
+ *   "requiresAuth": true,
+ *   "meta": {
+ *     "keywords": "test"
+ *   }
+ * }
+ */
+export function extractHandleFromFile(filePath: string): Record<string, any> | null {
+  try {
+    const content = readFileSync(filePath, 'utf-8')
+    return extractHandleFromContent(content)
+  }
+  catch (error) {
+    console.warn(`Failed to read file ${filePath}:`, error)
+    return null
+  }
+}
+
+/**
+ * 从文件内容中提取 handle 元信息
+ * @param content 文件内容字符串
+ * @returns 解析后的 handle 对象或 null
+ */
+export function extractHandleFromContent(content: string): Record<string, any> | null {
+  try {
+    const comments = extractComments(content)
+
+    for (const comment of comments) {
+      const commentText = comment.value || comment.raw || ''
+
+      if (commentText.includes('@handle')) {
+        // 直接提取 JSON 对象（支持多行）
+        const jsonMatch = commentText.match(/\{[\s\S]*\}/)
+        if (jsonMatch) {
+          try {
+            const handle = JSON.parse(jsonMatch[0])
+            if (validateHandle(handle)) {
+              return handle
+            }
+          }
+          catch (parseError) {
+            console.warn('Failed to parse handle JSON:', parseError)
+          }
+        }
+      }
+    }
+
+    return null
+  }
+  catch {
+    return null
+  }
+}
+
+/**
+ * 验证 handle 对象的结构
+ */
+export function validateHandle(handle: any): handle is Record<string, any> {
+  return typeof handle === 'object' && handle !== null && !Array.isArray(handle)
+}
+
+/**
+ * 合并多个 handle 对象
+ */
+export function mergeHandles(...handles: (Record<string, any> | null)[]): Record<string, any> | null {
+  const validHandles = handles.filter(validateHandle)
+
+  if (validHandles.length === 0) {
+    return null
+  }
+
+  if (validHandles.length === 1) {
+    return validHandles[0]
+  }
+
+  return validHandles.reduce((merged, current) => deepMerge(merged, current), {})
+}
+
+/**
+ * 深度合并两个对象
+ */
+function deepMerge(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
+  const result = { ...target }
+
+  for (const key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      const sourceValue = source[key]
+      const targetValue = result[key]
+
+      const isSourceObject = typeof sourceValue === 'object' && sourceValue !== null && !Array.isArray(sourceValue)
+      const isTargetObject = typeof targetValue === 'object' && targetValue !== null && !Array.isArray(targetValue)
+
+      if (isSourceObject && isTargetObject) {
+        result[key] = deepMerge(targetValue, sourceValue)
+      }
+      else {
+        result[key] = sourceValue
+      }
+    }
+  }
+
+  return result
+}
+
+/**
+ * 从多个文件中提取并合并 handle 信息
+ */
+export function extractAndMergeHandles(filePaths: string[]): Record<string, any> | null {
+  return mergeHandles(...filePaths.map(extractHandleFromFile))
+}
