@@ -21,51 +21,26 @@ export const MODULE_ID_VIRTUAL = 'virtual:better-pages-create/generated-pages'
 export const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:better-pages-create/route-block'
 
 /**
+ * 路径分隔符常量
+ */
+export const PATH_SEPARATOR = '/' // 统一的路径分隔符
+export const PAGE_DEGREE_SEPARATOR = '_' // 页面层级分隔符
+
+/**
  * 路由导入名称模板
- * $1 会被替换为实际的导入标识符
  */
 export const ROUTE_IMPORT_NAME = '__pages_import_$1__'
 
 /**
- * 匹配格式 (fileName) 或 (fileName)_ 替换为 ""
+ * 正则表达式常量
  */
-export const GROUP_RE = [/\([^)]+\)_?/g, ''] as const
-
-/**
- * 匹配格式 [...param] 替换为 *
- */
-export const SPLAT_RE = [/\[\.{3}\w+\]/g, '*'] as const
-
-/**
- * 匹配格式 [param] 替换为 :param
- */
-export const PARAM_RE = [/\[([^\]]+)\]/g, ':$1'] as const
-
-/**
- * 将 _ 替换成 /
- */
-export const PATH_REPLACER = [/_/g, '/'] as const
-
-/**
- * 统计斜杆数量，用于排序文件深度
- */
-export const COUNTSLASH_RE = /\//g
-
-export const REPLACEINDEX_RE = /\/?index$/
-
-export const PATH_SPLITTER = '/'
-
-export const PAGE_DEGREE_SPLITTER = '_'
-
-export const PAGE_FILE_NAME_WITH_SQUARE_BRACKETS_PATTERN = /^\[(?:\.{3})?\w+\]\.(.+)$/
-
-export const PAGE_DIR_NAME_PATTERN = /^[\w-]+[0-9a-z]$/i
-
-export const PAGE_FILE_NAME_PATTERN = /^[0-9a-zA-Z][0-9a-zA-Z-]+[0-9a-zA-Z]\.[a-z]+$/
-
-export const UPPERCASE_LETTER_PATTERN = /[A-Z]/g
-
-export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.(.+)$/
+export const SLASH_RE = /\//g // 匹配所有斜杠
+export const GROUP_RE = /\([^)]+\)_?/g // 匹配路由组格式 (fileName) 或 (fileName)_
+export const PARAM_RE = /\[([^\]]+)\]/g // 匹配路由参数 [param]
+export const SPLAT_RE = /\[\.{3}\w+\]/g // 匹配展开参数 [...param]
+export const UNDERSCORE_RE = /_/g // 匹配下划线
+export const PAGES_WITH_PATTERN = /^\[(?:\.{3})?\w+\]\.(.+)$/ // 匹配特殊页面文件
+export const ROUTE_NAME_WITH_PARAMS_PATTERN = /\/\[([^\]]+)\]\.(.+)$/ // 匹配带参数的路由名
 
 export const NOT_FOUND_ROUTE = {
   fullPath: '*',

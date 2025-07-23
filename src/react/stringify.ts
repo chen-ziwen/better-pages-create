@@ -1,6 +1,24 @@
-import type { ConstRoute, ResolvedOptions } from '../types'
+import type { ConstRoute, PagesType, ResolvedOptions } from '../types'
 import { stringifyRoutes } from '../stringify'
-import { generateImportMap } from '../utils'
+
+export function generateImportMap(routes: ConstRoute[], type: PagesType): string {
+  const imports: string[] = []
+
+  function collectImports(routeList: any[]) {
+    for (const route of routeList) {
+      if (route.matched?.[type]) {
+        const importPath = route.matched[type]
+        imports.push(`"${route.name}": () => import("${importPath}")`)
+      }
+      if (route.children) {
+        collectImports(route.children)
+      }
+    }
+  }
+
+  collectImports(routes)
+  return imports.join(',\n')
+}
 
 export function generateReactClientCode(routes: ConstRoute[], options: ResolvedOptions) {
   const { stringRoutes } = stringifyRoutes(routes, options)

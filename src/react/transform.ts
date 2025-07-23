@@ -11,13 +11,13 @@ import { slash } from '@antfu/utils'
 import {
   GROUP_RE,
   NOT_FOUND_ROUTE,
-  PAGE_DEGREE_SPLITTER,
-  PAGE_FILE_NAME_WITH_SQUARE_BRACKETS_PATTERN,
+  PAGE_DEGREE_SEPARATOR,
+  PAGES_WITH_PATTERN,
   PARAM_RE,
-  PATH_REPLACER,
-  PATH_SPLITTER,
+  PATH_SEPARATOR,
   ROUTE_NAME_WITH_PARAMS_PATTERN,
   SPLAT_RE,
+  UNDERSCORE_RE,
 } from '../constants'
 import { isRouteGroup, splitRouterName } from '../utils'
 
@@ -30,15 +30,15 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute) {
   const importPath = slash(join('/', pageDir, glob))
 
   // 解析目录和文件
-  const [file, ...dirs] = glob.split(PATH_SPLITTER).reverse()
-  const filteredDirs = dirs.filter(dir => !dir.startsWith(PAGE_DEGREE_SPLITTER)).reverse()
+  const [file, ...dirs] = glob.split(PATH_SEPARATOR).reverse()
+  const filteredDirs = dirs.filter(dir => !dir.startsWith(PAGE_DEGREE_SEPARATOR)).reverse()
 
   // 处理特殊文件名
-  if (PAGE_FILE_NAME_WITH_SQUARE_BRACKETS_PATTERN.test(file)) {
+  if (PAGES_WITH_PATTERN.test(file)) {
     filteredDirs.push(file.replace(new RegExp(`\\.${suffix}$`), ''))
   }
 
-  const routeName = filteredDirs.length === 0 ? 'root' : filteredDirs.join(PAGE_DEGREE_SPLITTER).toLowerCase()
+  const routeName = filteredDirs.length === 0 ? 'root' : filteredDirs.join(PAGE_DEGREE_SEPARATOR).toLowerCase()
 
   const routePath = transformRouterNameToPath(routeName)
 
@@ -65,10 +65,10 @@ export function transformRouterNameToPath(name: string) {
   }
 
   const resolveName = name
-    .replace(...GROUP_RE)
-    .replace(...SPLAT_RE)
-    .replace(...PARAM_RE)
-    .replace(...PATH_REPLACER)
+    .replace(GROUP_RE, '')
+    .replace(SPLAT_RE, '*')
+    .replace(PARAM_RE, ':$1')
+    .replace(UNDERSCORE_RE, '/')
 
   return `/${resolveName}`
 }
@@ -105,12 +105,12 @@ export function transformRouterEntriesToTrees(
   const entries = Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
 
   entries.forEach(([routeName]) => {
-    const parts = routeName.split(PAGE_DEGREE_SPLITTER)
+    const parts = routeName.split(PAGE_DEGREE_SEPARATOR)
 
     // 为每个层级建立父子关系
     for (let i = 0; i < parts.length; i++) {
-      const currentRoute = parts.slice(0, i + 1).join(PAGE_DEGREE_SPLITTER)
-      const parentRoute = i > 0 ? parts.slice(0, i).join(PAGE_DEGREE_SPLITTER) : null
+      const currentRoute = parts.slice(0, i + 1).join(PAGE_DEGREE_SEPARATOR)
+      const parentRoute = i > 0 ? parts.slice(0, i).join(PAGE_DEGREE_SEPARATOR) : null
 
       if (parentRoute) {
         if (!routeHierarchy.has(parentRoute)) {
@@ -143,7 +143,7 @@ export function transformRouterEntriesToTrees(
   // 找到所有顶级路由（没有父级的路由）
   const topLevelRoutes = entries
     .map(([routeName]) => routeName)
-    .filter(routeName => !routeName.includes(PAGE_DEGREE_SPLITTER))
+    .filter(routeName => !routeName.includes(PAGE_DEGREE_SEPARATOR))
 
   const trees = topLevelRoutes.map(routeName => buildTree(routeName))
 

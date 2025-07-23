@@ -1,14 +1,14 @@
 import type { ModuleNode, ViteDevServer } from 'vite'
-import type { ConstRoute, PagesType, ResolvedOptions } from './types'
+import type { ResolvedOptions } from './types'
 import { resolve } from 'node:path'
 import { URLSearchParams } from 'node:url'
 import { slash } from '@antfu/utils'
 import Debug from 'debug'
 import micromatch from 'micromatch'
 import {
-  COUNTSLASH_RE,
   MODULE_ID_VIRTUAL,
-  PAGE_DEGREE_SPLITTER,
+  PAGE_DEGREE_SEPARATOR,
+  SLASH_RE,
 } from './constants'
 
 export const debug = {
@@ -37,7 +37,7 @@ export function extsToGlob(extensions: string[]) {
  * @returns 斜杠的数量
  */
 export function countSlash(value: string) {
-  return (value.match(COUNTSLASH_RE) || []).length
+  return (value.match(SLASH_RE) || []).length
 }
 
 /**
@@ -122,7 +122,7 @@ export function parsePageRequest(id: string) {
  * @returns 是否为路由组
  */
 export function isRouteGroup(name: string) {
-  const lastName = name.split(PAGE_DEGREE_SPLITTER).at(-1)
+  const lastName = name.split(PAGE_DEGREE_SEPARATOR).at(-1)
 
   return lastName?.startsWith('(') && lastName?.endsWith(')')
 }
@@ -133,37 +133,12 @@ export function isRouteGroup(name: string) {
  * @returns 路由名称数组
  */
 export function splitRouterName(name: string) {
-  const names = name.split(PAGE_DEGREE_SPLITTER)
+  const names = name.split(PAGE_DEGREE_SEPARATOR)
 
   return names.reduce((prev, cur) => {
     const last = prev[prev.length - 1]
-    const next = last ? `${last}${PAGE_DEGREE_SPLITTER}${cur}` : cur
+    const next = last ? `${last}${PAGE_DEGREE_SEPARATOR}${cur}` : cur
     prev.push(next)
     return prev
   }, [] as string[])
-}
-
-/**
- * 生成导入映射，将路由匹配的页面文件导入为函数。
- * @param routes - 路由数组
- * @param type - 页面类型
- * @returns 导入映射字符串
- */
-export function generateImportMap(routes: ConstRoute[], type: PagesType): string {
-  const imports: string[] = []
-
-  function collectImports(routeList: any[]) {
-    for (const route of routeList) {
-      if (route.matched?.[type]) {
-        const importPath = route.matched[type]
-        imports.push(`"${route.name}": () => import("${importPath}")`)
-      }
-      if (route.children) {
-        collectImports(route.children)
-      }
-    }
-  }
-
-  collectImports(routes)
-  return imports.join(',\n')
 }
