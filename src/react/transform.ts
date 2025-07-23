@@ -24,21 +24,10 @@ import { isRouteGroup, splitRouterName } from '../utils'
 /**
  * 将页面 glob 路径转换为路由文件信息
  */
-export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: ResolvedOptions) {
-  const { alias } = options
+export function transformPageGlobToRouterFile(pageRoute: PageRoute) {
   const { path: fullPath, route, suffix, pageDir } = pageRoute
   const glob = `${route}.${suffix}`
-  const importPath = slash(join(pageDir, glob))
-
-  // 处理路径别名
-  let importAliasPath = importPath
-  for (const [aliasKey, dir] of Object.entries(alias)) {
-    const normalizedDir = slash(dir)
-    if (importPath.startsWith(normalizedDir)) {
-      importAliasPath = importPath.replace(normalizedDir, aliasKey)
-      break
-    }
-  }
+  const importPath = slash(join('/', pageDir, glob))
 
   // 解析目录和文件
   const [file, ...dirs] = glob.split(PATH_SPLITTER).reverse()
@@ -56,7 +45,6 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, options: Res
   return {
     fullPath,
     glob,
-    importAliasPath,
     importPath,
     routeName,
     routePath,
@@ -260,25 +248,25 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
   const endIndex = Math.min(startIndex + 4, data.length)
 
   for (let i = startIndex; i < endIndex; i++) {
-    const { importAliasPath, routeName, glob, suffix } = data[i]
+    const { importPath, routeName, glob, suffix } = data[i]
 
     if (routeName !== currentName) {
       break
     }
 
     if (glob.endsWith(`layout.${suffix}`)) {
-      matched.layout = importAliasPath
+      matched.layout = importPath
     }
     else if (glob.endsWith(`index.${suffix}`) || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
       if (!isRouteGroup(routeName)) {
-        matched.index = importAliasPath
+        matched.index = importPath
       }
     }
     else if (glob.endsWith(`loading.${suffix}`)) {
-      matched.loading = importAliasPath
+      matched.loading = importPath
     }
     else if (glob.endsWith(`error.${suffix}`)) {
-      matched.error = importAliasPath
+      matched.error = importPath
     }
   }
 

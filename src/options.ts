@@ -57,7 +57,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     exclude = ['**/components/**', '**/modules/**'],
     caseSensitive = false,
     routeNameSeparator = '_',
-    alias = { '@': 'src' },
     extendRoute,
     onRoutesGenerated,
     onClientGenerated,
@@ -79,7 +78,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     dirs: resolvedDirs, // 已解析的页面目录列表
     moduleIds, // 模块 ID 列表
     root, // 项目根目录
-    alias, // 项目别名
     extensions, // 支持的文件扩展名列表
     exclude, // 排除的文件/目录模式
     caseSensitive, // 路由大小写敏感性

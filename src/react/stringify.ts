@@ -110,7 +110,7 @@ export function transformRouteToReactRoute(route) {
   return reactRoute;
 }
 
-// const routes = ${stringRoutes};
+const routes = ${stringRoutes};
 
 export default transformRoutesToReactRoutes(routes);`
 

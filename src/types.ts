@@ -45,7 +45,6 @@ export interface PageResolver {
 interface Options {
   dirs: string | (string | PageOptions)[]
   extensions: string[]
-  alias: Record<string, string>
   exclude: string[]
   routeNameSeparator: string
   caseSensitive: boolean
@@ -66,7 +65,6 @@ export interface ResolvedOptions extends Omit<Options, 'pagesDir' | 'replaceSqua
   root: string
   dirs: PageOptions[]
   resolver: PageResolver
-  alias: Record<string, string>
   extensionsRE: RegExp
   moduleIds: string[]
 }
@@ -75,15 +73,13 @@ export interface RouterFile {
   componentName: string
   fullPath: string
   glob: string
-  importAliasPath: string
-  importPath: string | null
+  importPath: string
   routeName: string
-  routePath: string
+  routePath: string | null
   suffix: string
 }
 
 export interface RouterOption {
-  alias: Record<string, string>
   cwd: string
   log: boolean
   pageDir: string

@@ -22,7 +22,7 @@ async function computeReactRoutes(ctx: PageContext): Promise<ConstRoute[]> {
   const pageRoutes = [...ctx.pageRouteMap.values()].sort((a, b) => countSlash(a.route) - countSlash(b.route))
 
   // 将页面路由转换为路由文件信息
-  const files = pageRoutes.map(page => transformPageGlobToRouterFile(page, ctx.options))
+  const files = pageRoutes.map(page => transformPageGlobToRouterFile(page))
 
   const maps = transformRouterFilesToMaps(files)
 
