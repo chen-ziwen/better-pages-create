@@ -1,3 +1,13 @@
+/**
+ * @handle {
+ *   "title": "博客文章",
+ *   "requiresAuth": false,
+ *   "meta": {
+ *     "description": "博客文章列表页面"
+ *   }
+ * }
+ */
+
 import { Link } from 'react-router'
 
 export default function BlogIndexPage() {

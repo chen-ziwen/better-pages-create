@@ -25,16 +25,21 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "npm run build -- --watch --ignore-watch examples",
+    "dev": "turbo run dev --filter=\"@better-pages-create/*\"",
     "start": "pnpm --filter react dev",
-    "build": "tsup",
+    "build": "turbo run build --filter=\"@better-pages-create/*\" --filter=\"./\"",
+    "build:utils": "pnpm --filter @better-pages-create/utils build",
+    "build:core": "pnpm --filter @better-pages-create/core build",
+    "build:react-router": "pnpm --filter @better-pages-create/react-router build",
+    "build:main": "tsup",
+    "build:self": "tsup",
     "prepublishOnly": "npm run build",
     "release": "bumpp --commit --tag --push",
     "publish:ci": "esno scripts/publish.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "type-check": "tsc --noEmit",
     "prepare": "husky"
   },
@@ -42,18 +47,10 @@
     "vite": "> 5.0.0"
   },
   "dependencies": {
-    "@types/debug": "^4.1.12",
-    "@types/js-yaml": "^4.0.9",
-    "debug": "^4.4.1",
-    "dequal": "^2.0.3",
-    "extract-comments": "^1.1.0",
-    "js-yaml": "^4.1.0",
-    "local-pkg": "^1.1.1",
-    "micromatch": "^4.0.8",
-    "picocolors": "^1.1.1",
-    "react-router-dom": "^7.7.0",
-    "tinyglobby": "^0.2.14",
-    "yaml": "^2.8.0"
+    "@better-pages-create/core": "workspace:*",
+    "@better-pages-create/react-router": "workspace:*",
+    "@better-pages-create/utils": "workspace:*",
+    "react-router-dom": "^7.7.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
@@ -71,7 +68,9 @@
     "playwright": "^1.54.1",
     "react": "^19.1.0",
     "react-router": "^7.7.0",
+    "react-router-dom": "^7.7.0",
     "tsup": "^8.5.0",
+    "turbo": "^2.5.5",
     "typescript": "^5.8.3",
     "vite": "^7.0.4",
     "vitest": "^3.2.4"

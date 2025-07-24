@@ -5,6 +5,7 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: {
     resolve: true,
+    // 忽略extract-comments模块的类型检查
     compilerOptions: {
       skipLibCheck: true,
     },
@@ -12,11 +13,7 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   treeshake: true,
-  external: [
-    '@better-pages-create/core',
-    '@better-pages-create/react-router',
-    '@better-pages-create/utils',
-    'react',
-    'react-router-dom',
-  ],
+  outDir: 'dist',
+  external: ['@better-pages-create/core', '@better-pages-create/utils', 'react', 'react-router-dom'],
+  noExternal: ['extract-comments'],
 })

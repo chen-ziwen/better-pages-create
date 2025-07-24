@@ -8,42 +8,18 @@ importers:
 
   .:
     dependencies:
-      '@types/debug':
-        specifier: ^4.1.12
-        version: 4.1.12
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
-      debug:
-        specifier: ^4.4.1
-        version: 4.4.1
-      dequal:
-        specifier: ^2.0.3
-        version: 2.0.3
-      extract-comments:
-        specifier: ^1.1.0
-        version: 1.1.0
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
-      local-pkg:
-        specifier: ^1.1.1
-        version: 1.1.1
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
-      picocolors:
-        specifier: ^1.1.1
-        version: 1.1.1
+      '@better-pages-create/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@better-pages-create/react-router':
+        specifier: workspace:*
+        version: link:packages/react-router
+      '@better-pages-create/utils':
+        specifier: workspace:*
+        version: link:packages/utils
       react-router-dom:
         specifier: ^7.7.0
         version: 7.7.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      tinyglobby:
-        specifier: ^0.2.14
-        version: 0.2.14
-      yaml:
-        specifier: ^2.8.0
-        version: 2.8.0
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.16.2
@@ -93,6 +69,9 @@ importers:
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      turbo:
+        specifier: ^2.5.5
+        version: 2.5.5
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -105,6 +84,27 @@ importers:
 
   examples/react:
     dependencies:
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      debug:
+        specifier: ^4.4.1
+        version: 4.4.1
+      dequal:
+        specifier: ^2.0.3
+        version: 2.0.3
+      extract-comments:
+        specifier: ^1.1.0
+        version: 1.1.0
+      local-pkg:
+        specifier: ^1.1.1
+        version: 1.1.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -117,6 +117,9 @@ importers:
       react-router-dom:
         specifier: ^7.7.0
         version: 7.7.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      tinyglobby:
+        specifier: ^0.2.14
+        version: 0.2.14
     devDependencies:
       '@types/react':
         specifier: ^19.0.2
@@ -136,6 +139,108 @@ importers:
       vite:
         specifier: ^7.0.4
         version: 7.0.5(@types/node@22.16.5)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+
+  packages/core:
+    dependencies:
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      debug:
+        specifier: ^4.4.1
+        version: 4.4.1
+      dequal:
+        specifier: ^2.0.3
+        version: 2.0.3
+      extract-comments:
+        specifier: ^1.1.0
+        version: 1.1.0
+      local-pkg:
+        specifier: ^1.1.1
+        version: 1.1.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      tinyglobby:
+        specifier: ^0.2.14
+        version: 0.2.14
+      vite:
+        specifier: '> 5.0.0'
+        version: 7.0.5(@types/node@22.16.5)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+
+  packages/react-router:
+    dependencies:
+      '@better-pages-create/core':
+        specifier: workspace:*
+        version: link:../core
+      '@better-pages-create/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      debug:
+        specifier: ^4.4.1
+        version: 4.4.1
+      dequal:
+        specifier: ^2.0.3
+        version: 2.0.3
+      extract-comments:
+        specifier: ^1.1.0
+        version: 1.1.0
+      local-pkg:
+        specifier: ^1.1.1
+        version: 1.1.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      react:
+        specifier: '>=16.8.0'
+        version: 19.1.0
+      react-router-dom:
+        specifier: '>=7.0.0'
+        version: 7.7.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      tinyglobby:
+        specifier: ^0.2.14
+        version: 0.2.14
+      vite:
+        specifier: '> 5.0.0'
+        version: 7.0.5(@types/node@22.16.5)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+
+  packages/utils:
+    dependencies:
+      '@antfu/utils':
+        specifier: ^9.2.0
+        version: 9.2.0
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      debug:
+        specifier: ^4.4.1
+        version: 4.4.1
+      dequal:
+        specifier: ^2.0.3
+        version: 2.0.3
+      extract-comments:
+        specifier: ^1.1.0
+        version: 1.1.0
+      local-pkg:
+        specifier: ^1.1.1
+        version: 1.1.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      tinyglobby:
+        specifier: ^0.2.14
+        version: 0.2.14
 
 packages:
 
@@ -686,67 +791,56 @@ packages:
     resolution: {integrity: sha512-RkdOTu2jK7brlu+ZwjMIZfdV2sSYHK2qR08FUWcIoqJC2eywHbXr0L8T/pONFwkGukQqERDheaGTeedG+rra6Q==}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.45.1':
     resolution: {integrity: sha512-3kJ8pgfBt6CIIr1o+HQA7OZ9mp/zDk3ctekGl9qn/pRBgrRgfwiffaUmqioUGN9hv0OHv2gxmvdKOkARCtRb8Q==}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.45.1':
     resolution: {integrity: sha512-k3dOKCfIVixWjG7OXTCOmDfJj3vbdhN0QYEqB+OuGArOChek22hn7Uy5A/gTDNAcCy5v2YcXRJ/Qcnm4/ma1xw==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.45.1':
     resolution: {integrity: sha512-PmI1vxQetnM58ZmDFl9/Uk2lpBBby6B6rF4muJc65uZbxCs0EA7hhKCk2PKlmZKuyVSHAyIw3+/SiuMLxKxWog==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-loongarch64-gnu@4.45.1':
     resolution: {integrity: sha512-9UmI0VzGmNJ28ibHW2GpE2nF0PBQqsyiS4kcJ5vK+wuwGnV5RlqdczVocDSUfGX/Na7/XINRVoUgJyFIgipoRg==}
     cpu: [loong64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.45.1':
     resolution: {integrity: sha512-7nR2KY8oEOUTD3pBAxIBBbZr0U7U+R9HDTPNy+5nVVHDXI4ikYniH1oxQz9VoB5PbBU1CZuDGHkLJkd3zLMWsg==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.45.1':
     resolution: {integrity: sha512-nlcl3jgUultKROfZijKjRQLUu9Ma0PeNv/VFHkZiKbXTBQXhpytS8CIj5/NfBeECZtY2FJQubm6ltIxm/ftxpw==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.45.1':
     resolution: {integrity: sha512-HJV65KLS51rW0VY6rvZkiieiBnurSzpzore1bMKAhunQiECPuxsROvyeaot/tcK3A3aGnI+qTHqisrpSgQrpgA==}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.45.1':
     resolution: {integrity: sha512-NITBOCv3Qqc6hhwFt7jLV78VEO/il4YcBzoMGGNxznLgRQf43VQDae0aAzKiBeEPIxnDrACiMgbqjuihx08OOw==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.45.1':
     resolution: {integrity: sha512-+E/lYl6qu1zqgPEnTrs4WysQtvc/Sh4fC2nByfFExqgYrqkKWp1tWIbe+ELhixnenSpBbLXNi6vbEEJ8M7fiHw==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.45.1':
     resolution: {integrity: sha512-a6WIAp89p3kpNoYStITT9RbTbTnqarU7D8N8F2CV+4Cl9fwCOZraLVuVFvlpsW0SbIiYtEnhCZBPLoNdRkjQFw==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.45.1':
     resolution: {integrity: sha512-T5Bi/NS3fQiJeYdGvRpTAP5P02kqSOpqiopwhj0uaXB6nzs5JVi2XMJb18JUSKhCOX8+UE1UKQufyD6Or48dJg==}
@@ -798,9 +892,6 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
-  '@types/js-yaml@4.0.9':
-    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -2601,6 +2692,40 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  turbo-darwin-64@2.5.5:
+    resolution: {integrity: sha512-RYnTz49u4F5tDD2SUwwtlynABNBAfbyT2uU/brJcyh5k6lDLyNfYKdKmqd3K2ls4AaiALWrFKVSBsiVwhdFNzQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  turbo-darwin-arm64@2.5.5:
+    resolution: {integrity: sha512-Tk+ZeSNdBobZiMw9aFypQt0DlLsWSFWu1ymqsAdJLuPoAH05qCfYtRxE1pJuYHcJB5pqI+/HOxtJoQ40726Btw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  turbo-linux-64@2.5.5:
+    resolution: {integrity: sha512-2/XvMGykD7VgsvWesZZYIIVXMlgBcQy+ZAryjugoTcvJv8TZzSU/B1nShcA7IAjZ0q7OsZ45uP2cOb8EgKT30w==}
+    cpu: [x64]
+    os: [linux]
+
+  turbo-linux-arm64@2.5.5:
+    resolution: {integrity: sha512-DW+8CjCjybu0d7TFm9dovTTVg1VRnlkZ1rceO4zqsaLrit3DgHnN4to4uwyuf9s2V/BwS3IYcRy+HG9BL596Iw==}
+    cpu: [arm64]
+    os: [linux]
+
+  turbo-windows-64@2.5.5:
+    resolution: {integrity: sha512-q5p1BOy8ChtSZfULuF1BhFMYIx6bevXu4fJ+TE/hyNfyHJIfjl90Z6jWdqAlyaFLmn99X/uw+7d6T/Y/dr5JwQ==}
+    cpu: [x64]
+    os: [win32]
+
+  turbo-windows-arm64@2.5.5:
+    resolution: {integrity: sha512-AXbF1KmpHUq3PKQwddMGoKMYhHsy5t1YBQO8HZ04HLMR0rWv9adYlQ8kaeQJTko1Ay1anOBFTqaxfVOOsu7+1Q==}
+    cpu: [arm64]
+    os: [win32]
+
+  turbo@2.5.5:
+    resolution: {integrity: sha512-eZ7wI6KjtT1eBqCnh2JPXWNUAxtoxxfi6VdBdZFvil0ychCOTxbm7YLRBi1JSt7U3c+u3CLxpoPxLdvr/Npr3A==}
+    hasBin: true
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -3426,8 +3551,6 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
-
-  '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.15': {}
 
@@ -5448,6 +5571,33 @@ snapshots:
       get-tsconfig: 4.10.1
     optionalDependencies:
       fsevents: 2.3.3
+
+  turbo-darwin-64@2.5.5:
+    optional: true
+
+  turbo-darwin-arm64@2.5.5:
+    optional: true
+
+  turbo-linux-64@2.5.5:
+    optional: true
+
+  turbo-linux-arm64@2.5.5:
+    optional: true
+
+  turbo-windows-64@2.5.5:
+    optional: true
+
+  turbo-windows-arm64@2.5.5:
+    optional: true
+
+  turbo@2.5.5:
+    optionalDependencies:
+      turbo-darwin-64: 2.5.5
+      turbo-darwin-arm64: 2.5.5
+      turbo-linux-64: 2.5.5
+      turbo-linux-arm64: 2.5.5
+      turbo-windows-64: 2.5.5
+      turbo-windows-arm64: 2.5.5
 
   type-check@0.4.0:
     dependencies:

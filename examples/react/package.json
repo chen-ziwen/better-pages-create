@@ -10,10 +10,18 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/debug": "^4.1.12",
+    "debug": "^4.4.1",
+    "dequal": "^2.0.3",
+    "extract-comments": "^1.1.0",
+    "local-pkg": "^1.1.1",
+    "micromatch": "^4.0.8",
+    "picocolors": "^1.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.7.0",
-    "react-router-dom": "^7.7.0"
+    "react-router-dom": "^7.7.0",
+    "tinyglobby": "^0.2.14"
   },
   "devDependencies": {
     "@types/react": "^19.0.2",

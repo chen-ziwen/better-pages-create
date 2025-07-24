@@ -1,3 +1,13 @@
+/**
+ * @handle {
+ *   "title": "文章详情",
+ *   "requiresAuth": false,
+ *   "meta": {
+ *     "description": "文章详情页面"
+ *   }
+ * }
+ */
+
 import { Link, useParams } from 'react-router'
 
 export default function BlogPostPage() {

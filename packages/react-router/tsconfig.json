@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "extract-comments.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

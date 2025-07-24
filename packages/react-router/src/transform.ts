@@ -1,15 +1,9 @@
-import type { PageRoute } from '../context'
-import type {
-  ConstRoute,
-  ResolvedOptions,
-  RouterFile,
-  RouterNamePathMap,
-  RouterTree,
-} from '../types'
+import type { ConstRoute, PageRoute, ResolvedOptions, RouterFile, RouterNamePathMap, RouterTree } from '@better-pages-create/core'
 import { join } from 'node:path'
 import { slash } from '@antfu/utils'
 import {
   GROUP_RE,
+  isRouteGroup,
   NOT_FOUND_ROUTE,
   PAGE_DEGREE_SEPARATOR,
   PAGES_WITH_PATTERN,
@@ -17,9 +11,9 @@ import {
   PATH_SEPARATOR,
   ROUTE_NAME_WITH_PARAMS_PATTERN,
   SPLAT_RE,
+  splitRouterName,
   UNDERSCORE_RE,
-} from '../constants'
-import { isRouteGroup, splitRouterName } from '../utils'
+} from '@better-pages-create/utils'
 import { extractHandleFromFile } from './handle-extract'
 
 /**
@@ -108,9 +102,11 @@ export function transformRouterEntriesToTrees(
   // 构建路由层级关系映射
   const routeHierarchy = new Map<string, Set<string>>()
 
-  const entries = Array.from(maps.entries()).sort(([a], [b]) => a.localeCompare(b))
+  const entries = Array.from(maps.entries())
+  entries.sort((a, b) => a[0].localeCompare(b[0]))
 
-  entries.forEach(([routeName]) => {
+  entries.forEach((entry) => {
+    const routeName = entry[0]
     const parts = routeName.split(PAGE_DEGREE_SEPARATOR)
 
     // 为每个层级建立父子关系
@@ -149,7 +145,7 @@ export function transformRouterEntriesToTrees(
 
   // 找到所有顶级路由（没有父级的路由）
   const topLevelRoutes = entries
-    .map(([routeName]) => routeName)
+    .map(entry => entry[0])
     .filter(routeName => !routeName.includes(PAGE_DEGREE_SEPARATOR))
 
   const trees = topLevelRoutes.map(routeName => buildTree(routeName))
@@ -163,9 +159,9 @@ export function transformRouterEntriesToTrees(
       children: trees.filter((_, index) => index !== rootIndex),
     }]
 
-    const routes = newTrees[0].children
+    const routes = newTrees[0].children || []
 
-    const notFoundPath = routes.find(item => item?.routeName === '404')
+    const notFoundPath = routes.find((item: RouterTree) => item?.routeName === '404')
     if (notFoundPath) {
       NOT_FOUND_ROUTE.matched = notFoundPath.matched
     }
@@ -175,7 +171,7 @@ export function transformRouterEntriesToTrees(
     return newTrees
   }
 
-  const notFoundPath = trees.find(item => item?.routeName === '404')
+  const notFoundPath = trees.find((item: RouterTree) => item?.routeName === '404')
   if (notFoundPath) {
     NOT_FOUND_ROUTE.matched = notFoundPath.matched
   }
@@ -219,7 +215,7 @@ export function transformRouteTreeToElegantConstRoute(
   }
 
   if (children.length) {
-    route.children = children.map(child => transformRouteTreeToElegantConstRoute(child, options, route))
+    route.children = children.map((child: RouterTree) => transformRouteTreeToElegantConstRoute(child, options, route))
   }
 
   return route

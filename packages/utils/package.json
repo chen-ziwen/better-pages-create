@@ -1,0 +1,26 @@
+{
+  "name": "@better-pages-create/utils",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Utility functions for better-pages-create",
+  "author": "Chiko",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@antfu/utils": "^9.2.0",
+    "debug": "^4.4.1"
+  }
+}

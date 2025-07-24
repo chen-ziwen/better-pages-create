@@ -1,0 +1,32 @@
+{
+  "name": "@better-pages-create/react-router",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Better pages create for React Router",
+  "author": "Chiko",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-router-dom": ">=7.0.0",
+    "vite": "> 5.0.0"
+  },
+  "dependencies": {
+    "@better-pages-create/core": "workspace:*",
+    "@better-pages-create/utils": "workspace:*",
+    "extract-comments": "^1.1.0"
+  }
+}
