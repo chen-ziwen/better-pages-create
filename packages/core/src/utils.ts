@@ -1,9 +1,10 @@
 import type { ModuleNode, ViteDevServer } from 'vite'
-import type { ResolvedOptions } from './types'
+import type { ResolvedOptions, UserOptions } from './types'
 import { resolve } from 'node:path'
-import { slash } from '@antfu/utils'
+import { slash, toArray } from '@antfu/utils'
 import { debug, MODULE_ID_VIRTUAL } from '@better-pages-create/shared'
 import micromatch from 'micromatch'
+import { getPageDirs } from './files'
 
 /**
  * 检查路径是否在页面目录中
@@ -49,6 +50,24 @@ export function invalidatePagesModule(server: ViteDevServer) {
       moduleGraph.invalidateModule(mod, seen) // 使模块失效
     })
   }
+}
+
+/**
+ * 解析页面目录配置
+ * @param dirs - 用户配置的目录，可以是字符串或包含目录和基础路由的对象数组
+ * @param root - 项目根目录路径
+ * @param exclude - 需要排除的文件/目录模式数组
+ * @returns 解析后的页面目录选项数组
+ */
+export function resolvePageDirs(dirs: UserOptions['dirs'], root: string, exclude: string[]) {
+  dirs = toArray(dirs)
+  return dirs.flatMap((dir) => {
+    const option = typeof dir === 'string' ? { dir, baseRoute: '' } : dir
+    option.dir = slash(resolve(root, option.dir)).replace(`${root}/`, '')
+    option.baseRoute = option.baseRoute.replace(/^\//, '').replace(/\/$/, '')
+
+    return getPageDirs(option, root, exclude)
+  })
 }
 
 export { debug }

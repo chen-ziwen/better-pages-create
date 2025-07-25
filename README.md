@@ -1,6 +1,6 @@
 # Better Pages Create
 
-基于文件系统的路由生成工具，让项目的路由管理更简单、更直观。目前只支持 `react-router`，可根据自己的需求自行实现其他框架路由的解析器。
+一个基于 Vite 的文件路由生成插件，让项目的路由管理更简单、更直观。目前只支持 `react-router`，但可根据自己的需求自行实现其他框架路由的解析器。
 
 ![npm version](https://img.shields.io/badge/npm->=8.0.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/chen-ziwen/better-pages-create/blob/main/LICENSE)
@@ -340,8 +340,8 @@ MIT
 
 ## 贡献
 
-欢迎提交 Issues 和 Pull Requests！
+欢迎提交 Issues 和 Pull Requests ！
 
 ## 致谢
 
-本项目受到 [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages) 和 [Next.js](https://nextjs.org/) 的启发。
+本项目受到 [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages) 和 [elegant-router](https://github.com/soybeanjs/elegant-router) 的启发。

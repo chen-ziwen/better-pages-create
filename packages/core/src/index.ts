@@ -1,12 +1,8 @@
 import type { Plugin } from 'vite'
 import type { UserOptions } from './types'
-import { parsePageRequest } from '@better-pages-create/shared'
+import { MODULE_ID_VIRTUAL, parsePageRequest } from '@better-pages-create/shared'
 import { PageContext } from './context'
 import { stringifyRoutes } from './stringify'
-
-// 定义虚拟模块ID
-const MODULE_ID_VIRTUAL = 'virtual:better-pages-create/generated-pages'
-const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:better-pages-create/route-block'
 
 /**
  * 创建核心插件
@@ -61,28 +57,17 @@ function createCorePlugin(userOptions: UserOptions = {}): Plugin {
      */
     async load(id) {
       const {
-        moduleId, // 模块 ID
-        pageId, // 页面 ID
+        moduleId,
+        pageId,
       } = parsePageRequest(id)
 
-      // 加载页面路由模块
       if (moduleId === MODULE_ID_VIRTUAL && pageId && ctx.options.moduleIds.includes(pageId)) {
         return ctx.resolveRoutes() // 返回生成的路由代码
       }
-
-      // 加载路由块模块
-      if (id === ROUTE_BLOCK_ID_VIRTUAL) {
-        return {
-          code: 'export default {};', // 返回空的默认导出
-          map: null, // 无源映射
-        }
-      }
-
-      return null
     },
   }
 }
 
 export * from './types'
-export { MODULE_ID_VIRTUAL, PageContext, ROUTE_BLOCK_ID_VIRTUAL, stringifyRoutes }
+export { MODULE_ID_VIRTUAL, PageContext, stringifyRoutes }
 export default createCorePlugin

@@ -45,7 +45,6 @@ export class PageContext {
    * @param server - Vite 开发服务器实例
    */
   setupViteServer(server: ViteDevServer) {
-    // 如果是同一个服务器实例，直接返回
     if (this.mServer === server) {
       return
     }
@@ -62,14 +61,15 @@ export class PageContext {
   setupWatcher(watcher: ViteDevServer['watcher']) {
     // 监听文件删除事件
     watcher.on('unlink', async (path) => {
-      path = slash(path) // 标准化路径
+      path = slash(path)
 
       if (!isTarget(path, this.options)) {
         return
       }
 
-      await this.removePage(path) // 移除页面
-      this.onUpdate() // 触发更新
+      // 移除页面
+      await this.removePage(path)
+      this.onUpdate()
     })
 
     // 监听文件添加事件
@@ -80,13 +80,11 @@ export class PageContext {
         return
       }
 
-      // 找到对应的页面目录配置
       const page = this.options.dirs.find(i => path.startsWith(slash(resolve(this.root, i.dir))))!
 
       // 添加页面
       await this.addPage(path, page)
 
-      // 触发更新
       this.onUpdate()
     })
 
@@ -154,6 +152,7 @@ export class PageContext {
 
     // 从映射表中删除
     this.mPageRouteMap.delete(path)
+
     // 调用解析器的热模块替换移除处理函数
     await this.options.resolver.hmr?.removed?.(this, path)
   }

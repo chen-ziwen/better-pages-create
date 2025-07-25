@@ -1,27 +1,8 @@
 import type { PageResolver, ResolvedOptions, UserOptions } from './types'
-import { resolve } from 'node:path'
 import process from 'node:process'
-import { slash, toArray } from '@antfu/utils'
+import { slash } from '@antfu/utils'
 import { MODULE_IDS } from '@better-pages-create/shared'
-import { getPageDirs } from './files'
-
-/**
- * 解析页面目录配置
- * @param dirs - 用户配置的目录，可以是字符串或包含目录和基础路由的对象数组
- * @param root - 项目根目录路径
- * @param exclude - 需要排除的文件/目录模式数组
- * @returns 解析后的页面目录选项数组
- */
-function resolvePageDirs(dirs: UserOptions['dirs'], root: string, exclude: string[]) {
-  dirs = toArray(dirs)
-  return dirs.flatMap((dir) => {
-    const option = typeof dir === 'string' ? { dir, baseRoute: '' } : dir
-    option.dir = slash(resolve(root, option.dir)).replace(`${root}/`, '')
-    option.baseRoute = option.baseRoute.replace(/^\//, '').replace(/\/$/, '')
-
-    return getPageDirs(option, root, exclude)
-  })
-}
+import { resolvePageDirs } from './utils'
 
 /**
  * 解析用户选项，将用户配置转换为完整的已解析选项
