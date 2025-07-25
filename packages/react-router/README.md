@@ -58,7 +58,7 @@ export default function App() {
 
 ## 文档
 
-请参阅[主项目文档](https://github.com/yourusername/better-pages-create)获取更多信息。
+请参阅[主项目文档](https://github.com/chen-ziwen/better-pages-create/blob/main/README.md)获取更多信息。
 
 ## 许可证
 

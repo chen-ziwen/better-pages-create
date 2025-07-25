@@ -1,6 +1,6 @@
 # Better Pages Create
 
-基于文件系统的路由生成工具，让项目的路由管理更简单、更直观。目前只支持 `react-router`，可根据自己的需求自行实现其他框架的解析器。
+基于文件系统的路由生成工具，让项目的路由管理更简单、更直观。目前只支持 `react-router`，可根据自己的需求自行实现其他框架路由的解析器。
 
 ![npm version](https://img.shields.io/badge/npm->=8.0.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/chen-ziwen/better-pages-create/blob/main/LICENSE)
@@ -105,6 +105,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 路由组不会影响 URL 路径，但可以共享布局。
 
+### 下划线前缀路由
+
+- `src/pages/_exception/404/index.tsx` → `/404`
+- `src/pages/_utils/helpers.ts` → `/helpers`
+
+带下划线前缀的文件夹用于组织和归类相关文件，但不会在 URL 路径中产生额外的路径段。
+
 ### 特殊文件
 
 - `index.tsx` - 默认路由
@@ -112,6 +119,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 - `error.tsx` - 错误处理组件
 - `loading.tsx` - 加载状态组件
 - `404.tsx` - 未找到页面组件
+  
+特殊文件会在内部进行处理，每个路由文件夹下都可以定义这几个名称的文件
 
 ### 路由元数据
 
@@ -138,23 +147,38 @@ export default function Dashboard() {
 这些元数据将被自动提取并添加到生成的路由对象中的 `handle` 属性中，可以在路由守卫或组件中访问：
 
 ```tsx
-// 在路由守卫中使用
 // 在组件中使用
 import { useMatches } from 'react-router-dom'
 
-router.beforeEach((to, from) => {
-  const requiresAuth = to.handle?.auth
+// 在路由守卫中使用
+// src/routes/protected.tsx
+import { Navigate, useLoaderData } from 'react-router-dom'
 
-  if (requiresAuth && !isLoggedIn()) {
-    return '/login'
-  }
-})
-
+// 在路由组件中访问handle属性
 function MenuTitle() {
   const matches = useMatches()
   const activeRoute = matches[matches.length - 1]
 
   return <h1>{activeRoute.handle?.menu?.title || 'Untitled'}</h1>
+}
+
+export async function loader({ request }) {
+  const user = await getUser()
+  // 如果用户未登录且尝试访问需要认证的页面，重定向到登录页
+  if (!user) {
+    return { isAuthenticated: false }
+  }
+  return { isAuthenticated: true }
+}
+
+export default function ProtectedRoute() {
+  const { isAuthenticated } = useLoaderData()
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  return <div>Protected Content</div>
 }
 ```
 
@@ -307,7 +331,7 @@ createReactRouterPlugin({
 
 ## 示例
 
-查看 [examples/react](https://github.com/yourusername/better-pages-create/tree/main/examples/react) 目录获取完整示例。
+查看 [examples/react](https://github.com/chen-ziwen/better-pages-create/tree/main/examples/react) 目录获取完整示例。
 
 ## 许可证
 
