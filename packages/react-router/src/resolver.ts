@@ -1,5 +1,5 @@
 import type { ConstRoute, PageContext, PageResolver } from '@better-pages-create/core'
-import { countSlash } from '@better-pages-create/utils'
+import { countSlash } from '@better-pages-create/shared'
 import { generateReactClientCode } from './stringify'
 import {
   transformPageGlobToRouterFile,

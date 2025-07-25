@@ -209,7 +209,7 @@ export class PageContext {
    * 调试工具 getter
    * @returns 调试工具对象
    */
-  get debug() {
+  get debug(): typeof debug {
     return debug
   }
 

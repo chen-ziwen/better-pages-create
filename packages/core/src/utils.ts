@@ -2,7 +2,7 @@ import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ResolvedOptions } from './types'
 import { resolve } from 'node:path'
 import { slash } from '@antfu/utils'
-import { debug, MODULE_ID_VIRTUAL } from '@better-pages-create/utils'
+import { debug, MODULE_ID_VIRTUAL } from '@better-pages-create/shared'
 import micromatch from 'micromatch'
 
 /**

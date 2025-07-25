@@ -1,7 +1,8 @@
 {
   "name": "better-pages-create",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "private": true,
   "packageManager": "pnpm@10.4.1",
   "description": "Better react file routing",
   "author": "Chiko",
@@ -14,66 +15,22 @@
     "routing",
     "typescript"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "turbo run dev --filter=\"@better-pages-create/*\"",
-    "start": "pnpm --filter react dev",
-    "build": "turbo run build --filter=\"@better-pages-create/*\" --filter=\"./\"",
-    "build:utils": "pnpm --filter @better-pages-create/utils build",
-    "build:core": "pnpm --filter @better-pages-create/core build",
-    "build:react-router": "pnpm --filter @better-pages-create/react-router build",
-    "build:main": "tsup",
-    "build:self": "tsup",
-    "prepublishOnly": "npm run build",
-    "release": "bumpp --commit --tag --push",
-    "publish:ci": "esno scripts/publish.ts",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
+    "dev": "turbo run dev",
+    "start": "pnpm --filter better-pages-create-react-example dev",
+    "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "type-check": "tsc --noEmit",
     "prepare": "husky"
-  },
-  "peerDependencies": {
-    "vite": "> 5.0.0"
-  },
-  "dependencies": {
-    "@better-pages-create/core": "workspace:*",
-    "@better-pages-create/react-router": "workspace:*",
-    "@better-pages-create/utils": "workspace:*",
-    "react-router-dom": "^7.7.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
-    "@antfu/utils": "^9.2.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@types/micromatch": "^4.0.9",
-    "@types/node": "^22.16.3",
-    "@vitest/ui": "^3.2.4",
-    "bumpp": "^10.2.0",
     "eslint": "^9.29.0",
-    "esno": "^4.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
-    "playwright": "^1.54.1",
-    "react": "^19.1.0",
-    "react-router": "^7.7.0",
-    "react-router-dom": "^7.7.0",
-    "tsup": "^8.5.0",
-    "turbo": "^2.5.5",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.4",
-    "vitest": "^3.2.4"
+    "turbo": "^2.5.5"
   },
   "lint-staged": {
     "*.{css,html,json,js,jsx,ts,tsx,mdx}": [

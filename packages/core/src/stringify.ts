@@ -1,5 +1,5 @@
 import type { ResolvedOptions } from './types'
-import { ROUTE_IMPORT_NAME } from '@better-pages-create/utils'
+import { ROUTE_IMPORT_NAME } from '@better-pages-create/shared'
 
 // 正则表达式：匹配组件或元素属性
 const componentRE = /"(?:component|element)":("(.*?)")/g

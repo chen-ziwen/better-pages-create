@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "jsx": "react-jsx",
+    "target": "es2017",
+    "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["node", "vite/client"],
+    "types": ["vite/client"],
     "allowJs": true,
     "strict": true,
     "declaration": true,
@@ -17,5 +17,5 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "**/*.d.ts"]
+  "include": ["src/**/*"]
 }

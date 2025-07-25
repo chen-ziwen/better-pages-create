@@ -2,7 +2,7 @@ import type { ResolvedOptions, UserOptions } from './types'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { slash, toArray } from '@antfu/utils'
-import { MODULE_IDS } from '@better-pages-create/utils'
+import { MODULE_IDS } from '@better-pages-create/shared'
 import { getPageDirs } from './files'
 
 /**

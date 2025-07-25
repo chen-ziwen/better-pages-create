@@ -1,7 +1,7 @@
 import type { PageOptions, ResolvedOptions } from './types'
 import { join } from 'node:path'
 import { slash } from '@antfu/utils'
-import { extsToGlob } from '@better-pages-create/utils'
+import { extsToGlob } from '@better-pages-create/shared'
 import { globSync } from 'tinyglobby'
 
 /**

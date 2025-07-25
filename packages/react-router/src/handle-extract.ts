@@ -38,7 +38,6 @@ export function extractHandleFromContent(content: string): Record<string, any> |
       const commentText = comment.value || comment.raw || ''
 
       if (commentText.includes('@handle')) {
-        // 直接提取 JSON 对象（支持多行）
         const jsonMatch = commentText.match(/\{[\s\S]*\}/)
         if (jsonMatch) {
           try {

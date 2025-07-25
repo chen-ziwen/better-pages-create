@@ -13,7 +13,7 @@ import {
   SPLAT_RE,
   splitRouterName,
   UNDERSCORE_RE,
-} from '@better-pages-create/utils'
+} from '@better-pages-create/shared'
 import { extractHandleFromFile } from './handle-extract'
 
 /**

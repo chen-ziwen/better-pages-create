@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
+import betterPagesPlugin from '@better-pages-create/react-router'
 import react from '@vitejs/plugin-react'
-import betterPagesPlugin from 'better-pages-create'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
@@ -42,5 +42,14 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+  },
+  // 添加对Node.js模块的支持
+  optimizeDeps: {
+    exclude: ['@better-pages-create/react-router'],
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 })

@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import type { UserOptions } from './types'
-import { parsePageRequest } from '@better-pages-create/utils'
+import { parsePageRequest } from '@better-pages-create/shared'
 import { PageContext } from './context'
 import { stringifyRoutes } from './stringify'
 
@@ -8,7 +8,14 @@ import { stringifyRoutes } from './stringify'
 const MODULE_ID_VIRTUAL = 'virtual:better-pages-create/generated-pages'
 const ROUTE_BLOCK_ID_VIRTUAL = 'virtual:better-pages-create/route-block'
 
-function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
+/**
+ * 创建核心插件
+ * 这个函数创建一个基础的 Vite 插件，用于处理文件路由
+ *
+ * @param userOptions - 用户配置选项
+ * @returns Vite 插件
+ */
+function createCorePlugin(userOptions: UserOptions = {}): Plugin {
   let ctx: PageContext
 
   return {
@@ -16,13 +23,6 @@ function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
     enforce: 'pre',
 
     async configResolved(config) {
-      if (
-        !userOptions.resolver
-        && config.plugins.find(i => i.name.includes('vite:react'))
-      ) {
-        userOptions.resolver = 'react'
-      }
-
       ctx = new PageContext(userOptions, config.root)
       ctx.setLogger(config.logger)
 
@@ -85,4 +85,4 @@ function betterPagesPlugin(userOptions: UserOptions = {}): Plugin {
 
 export * from './types'
 export { MODULE_ID_VIRTUAL, PageContext, ROUTE_BLOCK_ID_VIRTUAL, stringifyRoutes }
-export default betterPagesPlugin
+export default createCorePlugin

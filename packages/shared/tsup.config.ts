@@ -8,4 +8,7 @@ export default defineConfig({
   sourcemap: true,
   treeshake: true,
   outDir: 'dist',
+  noExternal: [],
+  target: 'es2020',
+  splitting: true,
 })

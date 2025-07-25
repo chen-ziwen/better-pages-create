@@ -4,7 +4,7 @@ import { stringifyRoutes } from '@better-pages-create/core'
 export function generateImportMap(routes: ConstRoute[], type: PagesType): string {
   const imports: string[] = []
 
-  function collectImports(routeList: any[]) {
+  function collectImports(routeList: ConstRoute[]) {
     for (const route of routeList) {
       if (route.matched?.[type]) {
         const importPath = route.matched[type]

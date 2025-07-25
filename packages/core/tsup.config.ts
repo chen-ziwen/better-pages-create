@@ -8,5 +8,5 @@ export default defineConfig({
   sourcemap: true,
   treeshake: true,
   outDir: 'dist',
-  external: ['@better-pages-create/utils'],
+  external: ['@better-pages-create/shared'],
 })
