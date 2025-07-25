@@ -60,6 +60,7 @@ export default defineConfig({
 
 ```tsx
 import { createBrowserRouter } from 'react-router-dom'
+// routes 是根据文件结构自动生成的路由结构
 import routes from '~react-pages'
 
 export default createBrowserRouter(routes)
