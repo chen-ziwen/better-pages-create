@@ -2,17 +2,7 @@ import { readFileSync } from 'node:fs'
 import extractComments from 'extract-comments'
 
 /**
- * 从文件注释中提取 handle 元信息
- * 支持的注释格式：
- * @handle {"title": "页面标题", "requiresAuth": true}
- * 或者多行格式：
- * @handle {
- *   "title": "页面标题",
- *   "requiresAuth": true,
- *   "meta": {
- *     "keywords": "test"
- *   }
- * }
+ * 从文件注释中提取 handle 元信息，支持单行和多行
  */
 export function extractHandleFromFile(filePath: string): Record<string, any> | null {
   try {
