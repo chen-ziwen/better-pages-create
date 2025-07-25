@@ -1,4 +1,4 @@
-import type { ResolvedOptions, UserOptions } from './types'
+import type { PageResolver, ResolvedOptions, UserOptions } from './types'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { slash, toArray } from '@antfu/utils'
@@ -24,28 +24,6 @@ function resolvePageDirs(dirs: UserOptions['dirs'], root: string, exclude: strin
 }
 
 /**
- * 获取页面解析器
- * @param originalResolver - 用户配置的解析器，可以是字符串或解析器对象
- * @returns 解析器对象
- * @throws 如果解析器不支持或未提供
- */
-function getResolver(originalResolver: UserOptions['resolver']) {
-  if (!originalResolver)
-    throw new Error('No resolver provided')
-
-  if (typeof originalResolver !== 'string')
-    return originalResolver
-
-  switch (originalResolver) {
-    case 'react':
-      // 这里不直接导入react解析器，由调用方处理
-      throw new Error(`Resolver '${originalResolver}' must be provided as an object`)
-    default:
-      throw new Error(`Unsupported resolver: ${originalResolver}`)
-  }
-}
-
-/**
  * 解析用户选项，将用户配置转换为完整的已解析选项
  * @param userOptions - 用户提供的配置选项
  * @param viteRoot - Vite 项目根目录（可选）
@@ -64,17 +42,14 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
 
   const root = viteRoot || slash(process.cwd())
 
-  // 确保resolver存在
-  const resolver = getResolver(userOptions.resolver)
+  const resolver = userOptions.resolver as PageResolver
 
-  // 获取文件扩展名
   const extensions = userOptions.extensions || resolver.resolveExtensions()
 
   const extensionsRE = new RegExp(`\\.(${extensions.join('|')})$`)
 
   const resolvedDirs = resolvePageDirs(dirs, root, exclude)
 
-  // 获取模块ID
   const moduleIds = userOptions.moduleId ? [userOptions.moduleId] : resolver.resolveModuleIds() || MODULE_IDS
 
   const resolvedOptions: ResolvedOptions = {

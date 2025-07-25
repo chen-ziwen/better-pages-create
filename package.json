@@ -1,7 +1,6 @@
 {
   "name": "better-pages-create",
   "type": "module",
-  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.4.1",
   "description": "Better react file routing",

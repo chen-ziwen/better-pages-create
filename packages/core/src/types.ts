@@ -5,8 +5,6 @@ export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 
 export type CustomBlock = Record<string, any>
 
-export type InternalPageResolvers = 'react'
-
 export interface PageOptions {
   dir: string
   baseRoute: string
@@ -46,7 +44,7 @@ interface Options {
   routeNameSeparator: string
   caseSensitive: boolean
   moduleId: string
-  resolver: InternalPageResolvers | PageResolver
+  resolver: PageResolver
   extendRoute?: (route: ConstRoute, parent: ConstRoute | undefined) => ConstRoute | void
   onRoutesGenerated?: (routes: ConstRoute[]) => Awaitable<ConstRoute[] | void>
   onClientGenerated?: (clientCode: string) => Awaitable<string | void>
