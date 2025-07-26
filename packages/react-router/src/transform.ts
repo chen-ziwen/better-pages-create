@@ -14,7 +14,7 @@ import {
   splitRouterName,
   UNDERSCORE_RE,
 } from '@better-pages-create/shared'
-import { extractHandleFromFile } from './handle-extract'
+import { extractHandleFromFile } from './handle/extract'
 
 /**
  * 将页面 glob 路径转换为路由文件信息

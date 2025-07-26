@@ -1,16 +1,10 @@
-import type { ResolvedOptions } from './types'
-import { ROUTE_IMPORT_NAME } from '@better-pages-create/shared'
+// 匹配任意属性名的字符串值
+const hasFunctionRE = /"[^"]+":("(.*?)")/g
 
-// 正则表达式：匹配组件或元素属性
-const componentRE = /"(?:component|element)":("(.*?)")/g
-
-// 正则表达式：匹配函数属性（如 props、beforeEnter）
-const hasFunctionRE = /"(?:props|beforeEnter)":("(.*?)")/g
-
-// 正则表达式：匹配多行注释
+// 匹配多行注释
 const multilineCommentsRE = /\/\*(.|[\r\n])*?\*\//g
 
-// 正则表达式：匹配单行注释
+// 匹配单行注释
 const singlelineCommentsRE = /\/\/.*/g
 
 /**
@@ -21,66 +15,40 @@ const singlelineCommentsRE = /\/\/.*/g
  * @returns 处理后的值
  */
 function replaceFunction(_: any, value: any) {
-  if (typeof value === 'function' || typeof value === 'function') {
-    // 获取函数体并清理注释和空格
+  if (typeof value === 'function') {
     const fnBody = value.toString()
       .replace(multilineCommentsRE, '') // 移除多行注释
       .replace(singlelineCommentsRE, '') // 移除单行注释
       .replace(/(\s)/g, '') // 移除所有空格
 
-    // 检查是否为 ES6 箭头函数
-    if (fnBody.length < 8 || fnBody.substring(0, 8) !== 'function')
-      return `_NuFrRa_${fnBody}` // 标记箭头函数
-
-    return fnBody // 返回函数体
+    return `__FNC__${fnBody}`
   }
 
-  return value // 非函数值直接返回
+  return value
 }
 
+/**
+ * 字符串化路由
+ * 将路由对象转换为字符串，处理函数类型的值
+ * @param preparedRoutes - 准备好的路由对象
+ * @returns 字符串化后的路由对象
+ */
 export function stringifyRoutes(
   preparedRoutes: any[],
-  options: ResolvedOptions,
 ) {
-  const importsMap: Map<string, string> = new Map()
-
-  function getImportString(path: string, importName: string) {
-    return `import ${importName} from "${path}"`
-  }
-
-  function componentReplacer(str: string, replaceStr: string, path: string) {
-    let importName = importsMap.get(path)
-
-    if (!importName) {
-      importName = ROUTE_IMPORT_NAME.replace('$1', `${importsMap.size}`)
-    }
-
-    importsMap.set(path, importName)
-
-    importName = options.resolver.stringify?.component?.(importName) || importName
-
-    return str.replace(replaceStr, importName)
-  }
-
   function functionReplacer(str: string, replaceStr: string, content: string) {
-    if (content.startsWith('function'))
-      return str.replace(replaceStr, content)
-
-    if (content.startsWith('_NuFrRa_'))
-      return str.replace(replaceStr, content.slice(8))
+    if (content.startsWith('__FNC__')) {
+      return str.replace(replaceStr, content.slice(7))
+    }
 
     return str
   }
 
   const stringRoutes = JSON
     .stringify(preparedRoutes, replaceFunction)
-    .replace(componentRE, componentReplacer)
     .replace(hasFunctionRE, functionReplacer)
 
-  const imports = Array.from(importsMap).map(args => getImportString(...args))
-
   return {
-    imports,
     stringRoutes,
   }
 }

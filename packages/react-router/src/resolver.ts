@@ -52,7 +52,7 @@ async function resolveReactRoutes(ctx: PageContext) {
   // 计算路由
   const finalRoutes = await computeReactRoutes(ctx)
   // 生成客户端代码 - 传递 options 参数
-  let client = generateReactClientCode(finalRoutes, ctx.options)
+  let client = generateReactClientCode(finalRoutes)
   // 调用用户自定义的客户端代码生成后处理函数
   client = (await ctx.options.onClientGenerated?.(client)) || client
 

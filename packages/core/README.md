@@ -21,10 +21,8 @@ import betterPagesPlugin from '@better-pages-create/react-router'
 // 创建您自己的解析器
 const myResolver: PageResolver = {
   // 实现解析器接口...
-  // 包含路由生成和客户端代码生成
+  // 包含路由生成(或伪路由) 和客户端代码生成
 }
-
-// 创建
 
 // 创建插件
 function createMyPlugin(options: UserOptions = {}) {
