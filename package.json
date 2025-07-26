@@ -17,13 +17,15 @@
   "scripts": {
     "dev": "turbo run dev",
     "start": "pnpm --filter better-pages-create-react-example dev",
-    "build": "turbo run build",
+    "build": "turbo build --filter='./packages/*'",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "pnpm build && pnpm changeset publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
+    "@changesets/cli": "^2.29.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "eslint": "^9.29.0",
