@@ -2,7 +2,6 @@ import type { Plugin } from 'vite'
 import type { UserOptions } from './types'
 import { MODULE_ID_VIRTUAL, parsePageRequest } from '@better-pages-create/shared'
 import { PageContext } from './context'
-import { stringifyRoutes } from './stringify'
 
 /**
  * 创建核心插件
@@ -69,5 +68,5 @@ function createCorePlugin(userOptions: UserOptions = {}): Plugin {
 }
 
 export * from './types'
-export { MODULE_ID_VIRTUAL, PageContext, stringifyRoutes }
+export { MODULE_ID_VIRTUAL, PageContext }
 export default createCorePlugin

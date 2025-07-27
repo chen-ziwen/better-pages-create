@@ -1,6 +1,7 @@
 import { slash } from '@antfu/utils'
 import Debug from 'debug'
 import micromatch from 'micromatch'
+import serializeJavascript from 'serialize-javascript'
 
 export * from './constants'
 
@@ -89,4 +90,4 @@ export function splitRouterName(name: string, separator = '_') {
   }, [] as string[])
 }
 
-export { micromatch, slash }
+export { micromatch, serializeJavascript as serialize, slash }

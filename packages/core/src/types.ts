@@ -24,12 +24,6 @@ export interface PageResolver {
   resolveRoutes: (ctx: PageContext) => Awaitable<string>
   getComputedRoutes: (ctx: PageContext) => Awaitable<ConstRoute[]>
 
-  stringify?: {
-    dynamicImport?: (importPath: string) => string
-    component?: (importName: string) => string
-    final?: (code: string) => string
-  }
-
   hmr?: {
     added?: (ctx: PageContext, path: string) => Awaitable<void>
     removed?: (ctx: PageContext, path: string) => Awaitable<void>
