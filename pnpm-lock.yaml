@@ -60,6 +60,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.7.0(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1299,6 +1302,11 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -4285,6 +4293,10 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.8.3
+
+  cross-env@7.0.3:
+    dependencies:
+      cross-spawn: 7.0.6
 
   cross-spawn@7.0.6:
     dependencies:

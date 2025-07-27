@@ -43,13 +43,4 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  // 添加对Node.js模块的支持
-  optimizeDeps: {
-    exclude: ['@better-pages-create/react-router'],
-  },
-  build: {
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
-  },
 })

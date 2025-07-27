@@ -110,7 +110,7 @@ export class PageContext {
    * 添加页面
    * 将页面文件添加到路由映射表中
    * @param path - 页面文件路径（可以是单个路径或路径数组）
-   * @param pageDir - 页面目录配置layout
+   * @param pageDir - 页面目录配置
    */
   async addPage(path: string | string[], pageDir: PageOptions) {
     debug.pages('add', path)

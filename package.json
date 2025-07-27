@@ -16,7 +16,8 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "start": "pnpm --filter better-pages-create-react-example dev",
+    "start": "pnpm --filter @better-pages-create-example/react dev",
+    "start:debug": "pnpm --filter @better-pages-create-example/react dev:debug",
     "build": "turbo build --filter='./packages/*'",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",

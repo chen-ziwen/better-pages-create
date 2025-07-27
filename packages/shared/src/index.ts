@@ -6,14 +6,14 @@ import serializeJavascript from 'serialize-javascript'
 export * from './constants'
 
 export const debug = {
-  hmr: Debug('vite-plugin-pages:hmr'), // 热模块替换调试
-  routeBlock: Debug('vite-plugin-pages:routeBlock'), // 路由块调试
-  options: Debug('vite-plugin-pages:options'), // 选项调试
-  pages: Debug('vite-plugin-pages:pages'), // 页面调试
-  search: Debug('vite-plugin-pages:search'), // 搜索调试
-  env: Debug('vite-plugin-pages:env'), // 环境调试
-  cache: Debug('vite-plugin-pages:cache'), // 缓存调试
-  resolver: Debug('vite-plugin-pages:resolver'), // 解析器调试
+  hmr: Debug('better-pages-create:hmr'), // 热模块替换调试
+  routeBlock: Debug('better-pages-create:routeBlock'), // 路由块调试
+  options: Debug('better-pages-create:options'), // 选项调试
+  pages: Debug('better-pages-create:pages'), // 页面调试
+  search: Debug('better-pages-create:search'), // 搜索调试
+  env: Debug('better-pages-create:env'), // 环境调试
+  cache: Debug('better-pages-create:cache'), // 缓存调试
+  resolver: Debug('better-pages-create:resolver'), // 解析器调试
 }
 
 /**
