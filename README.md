@@ -86,7 +86,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ### 基本路由
 
 - `src/pages/home/index.tsx` → `/home`
-- `src/pages/about.tsx` → `/about`
+- `src/pages/about/index.tsx` → `/about`
 - `src/pages/contact/index.tsx` → `/contact`
 
 ### 动态路由
@@ -111,7 +111,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 带下划线前缀的文件夹用于组织和归类相关文件，但不会在 URL 路径中产生额外的路径段。
 
 - `src/pages/_exception/404/index.tsx` → `/404`
-- `src/pages/_utils/helpers.ts` → `/helpers`
+- `src/pages/_utils/helpers/index.ts` → `/helpers`
 
 
 ### 特殊文件

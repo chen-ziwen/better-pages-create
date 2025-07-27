@@ -4,8 +4,7 @@
 
 ### Patch Changes
 
-- 增加 `react-router `handle`热更新能力，实时获取最新修改的`handle` 元信息
-
+- 增加 handle 热更新能力，实时获取最新修改的 handle 元信息
 - 重写部分代码
 - 移除一些无用依赖和方法
 
