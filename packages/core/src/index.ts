@@ -61,7 +61,7 @@ function createCorePlugin(userOptions: UserOptions = {}): Plugin {
       } = parsePageRequest(id)
 
       if (moduleId === MODULE_ID_VIRTUAL && pageId && ctx.options.moduleIds.includes(pageId)) {
-        return ctx.resolveRoutes() // 返回生成的路由代码
+        return ctx.resolveRoutes() // 返回生成的客户端代码
       }
     },
   }

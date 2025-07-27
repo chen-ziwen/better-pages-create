@@ -14,8 +14,6 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
   const {
     dirs = ['src/pages'],
     exclude = ['**/components/**', '**/modules/**'],
-    caseSensitive = false,
-    routeNameSeparator = '_',
     extendRoute,
     onRoutesGenerated,
     onClientGenerated,
@@ -39,10 +37,8 @@ export function resolveOptions(userOptions: UserOptions, viteRoot?: string): Res
     root, // 项目根目录
     extensions, // 支持的文件扩展名列表
     exclude, // 排除的文件/目录模式
-    caseSensitive, // 路由大小写敏感性
     resolver, // 页面解析器实例
     extensionsRE, // 文件扩展名匹配正则表达式
-    routeNameSeparator, // 路由名称分隔符
     extendRoute, // 扩展路由的函数
     onRoutesGenerated, // 路由生成后的回调函数
     onClientGenerated, // 客户端代码生成后的回调函数

@@ -9,7 +9,7 @@
 
 - 📁 **基于文件系统的路由** - 目录结构即路由结构
 - 🚀 **零配置** - 开箱即用，无需复杂配置
-- 🔄 **热更新** - 自动检测文件变化，实时更新路由
+- 🔄 **热更新** - 自动检测文件变化，实时更新路由和元信息
 - 🧩 **嵌套布局** - 支持多层嵌套布局组件
 - 🔀 **动态路由** - 支持参数化路由（如 `[id].tsx`）
 - 🧠 **智能索引** - 自动处理 index 文件作为默认路由
@@ -101,19 +101,22 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ### 路由组
 
+路由组不会影响 URL 路径，但可以共享布局。
+
 - `src/pages/(auth)/login/index.tsx` → `/login`
 - `src/pages/(auth)/register/index.tsx` → `/register`
 
-路由组不会影响 URL 路径，但可以共享布局。
-
 ### 下划线前缀路由
+
+带下划线前缀的文件夹用于组织和归类相关文件，但不会在 URL 路径中产生额外的路径段。
 
 - `src/pages/_exception/404/index.tsx` → `/404`
 - `src/pages/_utils/helpers.ts` → `/helpers`
 
-带下划线前缀的文件夹用于组织和归类相关文件，但不会在 URL 路径中产生额外的路径段。
 
 ### 特殊文件
+
+特殊文件会在内部进行处理，每个路由文件夹下都可以定义这几个名称的文件。
 
 - `index.tsx` - 默认路由
 - `layout.tsx` - 布局组件
@@ -121,8 +124,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 - `loading.tsx` - 加载状态组件
 - `404.tsx` - 未找到页面组件
   
-特殊文件会在内部进行处理，每个路由文件夹下都可以定义这几个名称的文件
-
 ### 路由元数据
 
 你可以通过在组件文件中添加特殊注释 `@handle` 来为路由添加元数据：
@@ -130,14 +131,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ```tsx
 /**
  * @handle {
+ *   "role": "Chiko",
  *   "auth": true,
- *   "role": "admin",
  *   "menu": {
  *     "title": "Dashboard",
  *     "icon": "chart"
  *   }
  * }
  */
+
 import React from 'react'
 
 export default function Dashboard() {
@@ -190,14 +192,17 @@ interface UserOptions {
   // 页面目录，可以是字符串或配置对象数组
   dirs?: string | (string | PageOptions)[]
 
+  // 模块 ID 列表
+  moduleIds?: string[]
+
   // 要排除的文件/目录模式
   exclude?: string[]
 
-  // 路由大小写敏感
-  caseSensitive?: boolean
+  // 路由文件的后缀名
+  extensions?: string[]
 
-  // 路由名称分隔符
-  routeNameSeparator?: string
+  // 自定义路由解析器
+  resolver?: PageResolver
 
   // 扩展路由的函数
   extendRoute?: (route: ConstRoute, parent: ConstRoute | undefined) => ConstRoute | void
@@ -273,7 +278,6 @@ export function createVueRouterPlugin(userOptions: UserOptions = {}): Plugin {
 ```typescript
 function computeVueRoutes(ctx: PageContext) {
   // 实现路由计算逻辑
-  // ...
 }
 
 function generateVueRouterCode(routes, options) {
@@ -298,12 +302,12 @@ createReactRouterPlugin({
   extendRoute(route, parent) {
     // 添加自定义元数据
     if (route.path?.includes('/admin/')) {
-      route.meta = { ...route.meta, requiresAuth: true, role: 'admin' }
+      route.handle = { ...route.handle, requiresAuth: true, role: 'Chiko' }
     }
     return route
   },
 
-  // 处理最终路由数组
+  // 处理伪路由数组
   onRoutesGenerated(routes) {
     // 添加全局错误处理路由
     routes.push({

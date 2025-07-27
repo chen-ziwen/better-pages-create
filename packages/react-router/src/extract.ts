@@ -9,8 +9,8 @@ export function extractHandleFromFile(filePath: string): Record<string, any> | n
     const content = readFileSync(filePath, 'utf-8')
     return extractHandleFromContent(content)
   }
-  catch (error) {
-    console.warn(`Failed to read file ${filePath}:`, error)
+  catch (error: any) {
+    console.warn(`Failed to read file ${filePath}: ${error.message}`)
     return null
   }
 }

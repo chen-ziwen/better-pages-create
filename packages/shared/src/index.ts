@@ -52,19 +52,6 @@ export function parsePageRequest(id: string) {
 }
 
 /**
- * 标准化字符串大小写
- * @param str - 要处理的字符串
- * @param caseSensitive - 是否大小写敏感
- * @returns 处理后的字符串
- */
-export function normalizeCase(str: string, caseSensitive: boolean) {
-  if (!caseSensitive) {
-    return str.toLocaleLowerCase()
-  }
-  return str
-}
-
-/**
  * 判断是否为路由组
  * @param name - 文件名
  * @returns 是否为路由组

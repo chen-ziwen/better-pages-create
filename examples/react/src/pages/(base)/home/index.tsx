@@ -1,11 +1,11 @@
 /**
  * @handle {
- *   "title": "首页",
- *   "requiresAuth": false,
- *   "const": true,
- *   "meta": {
- *     "description": "首页描述"
- *   }
+ * "title": "首页",
+ * "requiresAuth": false,
+ * "const": true,
+ * "meta": {
+ *    "description": "我是首页 你记住！"
+ *  }
  * }
  */
 
@@ -124,6 +124,7 @@ export default function HomePage() {
             <Link to="/login" className="nav-link">🔐 认证布局</Link>
             <Link to="/stats" className="nav-link">📊 仪表板</Link>
             <Link to="/blog/hello-world" className="nav-link">📝 动态路由</Link>
+            <Link to="/test" className="测试"> 测试</Link>
           </div>
         </div>
       </div>

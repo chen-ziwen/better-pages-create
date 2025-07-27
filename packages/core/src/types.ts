@@ -35,8 +35,6 @@ interface Options {
   dirs: string | (string | PageOptions)[]
   extensions: string[]
   exclude: string[]
-  routeNameSeparator: string
-  caseSensitive: boolean
   moduleId: string
   resolver: PageResolver
   extendRoute?: (route: ConstRoute, parent: ConstRoute | undefined) => ConstRoute | void

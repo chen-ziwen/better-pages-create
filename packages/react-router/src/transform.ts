@@ -1,4 +1,4 @@
-import type { ConstRoute, PageRoute, ResolvedOptions, RouterFile, RouterNamePathMap, RouterTree } from '@better-pages-create/core'
+import type { ConstRoute, CustomBlock, PageRoute, ResolvedOptions, RouterFile, RouterNamePathMap, RouterTree } from '@better-pages-create/core'
 import { join } from 'node:path'
 import { slash } from '@antfu/utils'
 import {
@@ -14,12 +14,11 @@ import {
   splitRouterName,
   UNDERSCORE_RE,
 } from '@better-pages-create/shared'
-import { extractHandleFromFile } from './handle/extract'
 
 /**
  * 将页面 glob 路径转换为路由文件信息
  */
-export function transformPageGlobToRouterFile(pageRoute: PageRoute) {
+export function transformPageGlobToRouterFile(pageRoute: PageRoute, customBlockMap: Map<string, CustomBlock>) {
   const { path: fullPath, route, suffix, pageDir } = pageRoute
   const glob = `${route}.${suffix}`
   const importPath = slash(join('/', pageDir, glob))
@@ -38,7 +37,7 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute) {
   const routePath = transformRouterNameToPath(routeName)
 
   // 提取出 handle 信息
-  const handle = extractHandleFromFile(fullPath)
+  const handle = customBlockMap.get(fullPath) || null
 
   return {
     componentName: routeName,

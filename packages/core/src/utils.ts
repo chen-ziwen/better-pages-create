@@ -12,7 +12,7 @@ import { getPageDirs } from './files'
  * @param options - 已解析的选项
  * @returns 是否在页面目录中
  */
-function isPagesDir(path: string, options: ResolvedOptions) {
+export function isPagesDir(path: string, options: ResolvedOptions) {
   for (const page of options.dirs) {
     const dirPath = slash(resolve(options.root, page.dir))
     if (path.startsWith(dirPath))
