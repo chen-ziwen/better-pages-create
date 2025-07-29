@@ -6,6 +6,12 @@
   "description": "Better react file routing",
   "author": "Chiko",
   "license": "MIT",
+  "homepage": "https://github.com/chen-ziwen/better-pages-create",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chen-ziwen/better-pages-create"
+  },
+  "bugs": "https://github.com/chen-ziwen/better-pages-create/issues",
   "keywords": [
     "vite",
     "react",

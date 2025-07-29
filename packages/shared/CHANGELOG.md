@@ -1,5 +1,11 @@
 # @better-pages-create/shared
 
+## 0.1.4
+
+### Patch Changes
+
+- 添加包链接信息
+
 ## 0.1.3
 
 ### Patch Changes
