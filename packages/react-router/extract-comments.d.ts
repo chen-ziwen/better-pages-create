@@ -3,5 +3,5 @@ declare module 'extract-comments' {
     value?: string
     raw?: string
   }>
-  export = extractComments
+  export { extractComments }
 }

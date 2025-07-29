@@ -1,5 +1,11 @@
 # @better-pages-create/react-router
 
+## 0.1.5
+
+### Patch Changes
+
+- 修复 handle 提取函数类型导出错误
+
 ## 0.1.4
 
 ### Patch Changes
