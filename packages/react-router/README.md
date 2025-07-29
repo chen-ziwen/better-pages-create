@@ -49,11 +49,11 @@ export default function App() {
 ## 文件路由规则
 
 - `src/pages/index.tsx` → `/`
-- `src/pages/about.tsx` → `/about`
+- `src/pages/about/index.tsx` → `/about`
 - `src/pages/users/[id].tsx` → `/users/:id`
 - `src/pages/users/[...all].tsx` → `/users/*`
-- `src/pages/blog/(group)/post.tsx` → `/blog/post`
-- `src/pages/(auth)/login.tsx` → `/login` (带auth布局)
+- `src/pages/blog/(group)/post/index.tsx` → `/blog/post`
+- `src/pages/(auth)/login/index.tsx` → `/login` (带auth布局)
 - `src/pages/layout.tsx` → 布局组件
 
 ## 文档
