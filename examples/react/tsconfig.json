@@ -15,8 +15,8 @@
       "@/*": ["src/*"]
     },
     "resolveJsonModule": true,
+    "types": ["vite/client", "@better-pages-create/react-router/client-react"],
     "allowImportingTsExtensions": true,
-    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -25,6 +25,5 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  // "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src"]
 }

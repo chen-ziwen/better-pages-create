@@ -1,5 +1,11 @@
 # @better-pages-create/react-router
 
+## 0.1.4
+
+### Patch Changes
+
+- 修复导出的虚拟模块缺失类型的问题
+
 ## 0.1.3
 
 ### Patch Changes
