@@ -1,6 +1,4 @@
 import type { ConstRoute, CustomBlock, PageRoute, ResolvedOptions, RouterFile, RouterNamePathMap, RouterTree } from '@better-pages-create/core'
-import { join } from 'node:path'
-import { slash } from '@antfu/utils'
 import {
   GROUP_RE,
   isRouteGroup,
@@ -19,9 +17,7 @@ import {
  * 将页面 glob 路径转换为路由文件信息
  */
 export function transformPageGlobToRouterFile(pageRoute: PageRoute, customBlockMap: Map<string, CustomBlock>) {
-  const { path: fullPath, route, suffix, pageDir } = pageRoute
-  const glob = `${route}.${suffix}`
-  const importPath = slash(join('/', pageDir, glob))
+  const { path: fullPath, suffix, glob, importPath } = pageRoute
 
   // 解析目录和文件
   const [file, ...dirs] = glob.split(PATH_SEPARATOR).reverse()
@@ -36,7 +32,6 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, customBlockM
 
   const routePath = transformRouterNameToPath(routeName)
 
-  // 提取出 handle 信息
   const handle = customBlockMap.get(fullPath) || null
 
   return {
@@ -124,10 +119,10 @@ export function transformRouterEntriesToTrees(
 
   // 构建树结构
   const buildTree = (routeName: string): RouterTree => {
-    const { fullPath, matched, handle } = findMatchedFiles(files, routeName)
+    const { basePath, matched, handle } = findMatchedFiles(files, routeName)
 
     const tree: RouterTree = {
-      fullPath,
+      basePath,
       matched,
       routeName,
       handle,
@@ -225,27 +220,27 @@ export function transformRouteTreeToElegantConstRoute(
  */
 function findMatchedFiles(data: RouterFile[], currentName: string) {
   const matched: Record<string, string> = {}
+  let indexHandle: Record<string, any> | null = null
+  let basePath: string | null = null
 
-  const startIndex = data.findIndex(item => item.routeName === currentName)
-  if (startIndex === -1) {
-    return { fullPath: null, matched }
+  const matchedFiles = data.filter(item => item.routeName === currentName)
+
+  if (matchedFiles.length === 0) {
+    return { basePath: null, matched, handle: null }
   }
 
-  const endIndex = Math.min(startIndex + 4, data.length)
-
-  for (let i = startIndex; i < endIndex; i++) {
-    const { importPath, routeName, glob, suffix } = data[i]
-
-    if (routeName !== currentName) {
-      break
-    }
+  for (const file of matchedFiles) {
+    const { importPath, glob, suffix, handle } = file
 
     if (glob.endsWith(`layout.${suffix}`)) {
       matched.layout = importPath
     }
     else if (glob.endsWith(`index.${suffix}`) || ROUTE_NAME_WITH_PARAMS_PATTERN.test(glob)) {
-      if (!isRouteGroup(routeName)) {
+      if (!isRouteGroup(currentName)) {
         matched.index = importPath
+        if (handle) {
+          indexHandle = handle
+        }
       }
     }
     else if (glob.endsWith(`loading.${suffix}`)) {
@@ -254,7 +249,11 @@ function findMatchedFiles(data: RouterFile[], currentName: string) {
     else if (glob.endsWith(`error.${suffix}`)) {
       matched.error = importPath
     }
+
+    if (!basePath) {
+      basePath = file.fullPath.replace(file.importPath.replace(/^\//, ''), '').replace(/\/$/, '')
+    }
   }
 
-  return { fullPath: data[startIndex].fullPath, matched, handle: data[startIndex].handle }
+  return { basePath, matched, handle: indexHandle }
 }

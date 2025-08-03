@@ -1,5 +1,11 @@
 # @better-pages-create/core
 
+## 0.1.5
+
+### Patch Changes
+
+- 修复 handle 提取问题，优化部分逻辑
+
 ## 0.1.4
 
 ### Patch Changes

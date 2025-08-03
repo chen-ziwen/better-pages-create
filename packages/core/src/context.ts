@@ -129,9 +129,14 @@ export class PageContext {
       // 生成路由路径：基础路由 + 相对路径（去除扩展名）
       const route = slash(join(pageDir.baseRoute, p.replace(`${pageDirPath}/`, '').replace(`.${extension}`, '')))
 
-      // 添加到路由映射表
+      const glob = `${route}.${extension}`
+
+      const importPath = slash(join('/', pageDir.dir, glob))
+
       this.mPageRouteMap.set(p, {
         path: p,
+        glob,
+        importPath,
         route,
         suffix: extension,
         pageDir: pageDir.dir,

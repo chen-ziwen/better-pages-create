@@ -1,5 +1,13 @@
 # @better-pages-create/react-router
 
+## 0.1.7
+
+### Patch Changes
+
+- 修复 handle 提取问题，优化部分逻辑
+- Updated dependencies
+  - @better-pages-create/core@0.1.5
+
 ## 0.1.6
 
 ### Patch Changes

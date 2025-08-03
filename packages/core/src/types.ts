@@ -15,6 +15,8 @@ export interface PageRoute {
   path: string
   route: string
   suffix: string
+  glob: string
+  importPath: string
   pageDir: string
 }
 
@@ -79,7 +81,8 @@ export interface RouterOption {
 
 export interface RouterTree {
   children?: RouterTree[]
-  fullPath: string | null
+  fullPath?: string | null
+  basePath?: string | null
   matched: Record<string, string>
   routeName: string
   routePath: string | null
