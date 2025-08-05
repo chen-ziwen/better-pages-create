@@ -48,7 +48,39 @@ export default defineConfig({
     createReactRouterPlugin({
       // 可选配置
       dirs: ['src/pages'],
-      exclude: ['**/components/**']
+      exclude: ['**/components/**'],
+      extendRoute(route, parent) {
+         // 添加自定义元数据
+         if (route.path?.includes('/admin/')) {
+            route.handle = { 
+              ...route.handle, 
+              requiresAuth: true, 
+              role: 'Chiko' 
+            }
+         }
+         return route
+      },
+      onRoutesGenerated(routes) {
+         // 添加全局错误处理路由
+         routes.push({
+           path: '*',
+           name: 'not-found',
+           component: './NotFound.tsx'
+         })
+         return routes
+      },
+      onClientGenerated(code) {
+         // 添加自定义导入或逻辑
+         return `
+           // 添加路由守卫
+           import { setupGuards } from './guards'
+     
+           ${code}
+     
+           // 在导出前设置路由守卫
+           setupGuards(routes)
+         `
+      }
     })
   ]
 })
@@ -122,7 +154,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 - `layout.tsx` - 布局组件
 - `error.tsx` - 错误处理组件
 - `loading.tsx` - 加载状态组件
-- `404.tsx` - 未找到页面组件
   
 ### 路由元数据
 
@@ -153,35 +184,12 @@ export default function Dashboard() {
 // 在组件中使用
 import { useMatches } from 'react-router-dom'
 
-// 在路由守卫中使用
-// src/routes/protected.tsx
-import { Navigate, useLoaderData } from 'react-router-dom'
-
 // 在路由组件中访问handle属性
 function MenuTitle() {
   const matches = useMatches()
   const activeRoute = matches[matches.length - 1]
 
   return <h1>{activeRoute.handle?.menu?.title || 'Untitled'}</h1>
-}
-
-export async function loader({ request }) {
-  const user = await getUser()
-  // 如果用户未登录且尝试访问需要认证的页面，重定向到登录页
-  if (!user) {
-    return { isAuthenticated: false }
-  }
-  return { isAuthenticated: true }
-}
-
-export default function ProtectedRoute() {
-  const { isAuthenticated } = useLoaderData()
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <div>Protected Content</div>
 }
 ```
 
@@ -292,48 +300,6 @@ function generateVueRouterCode(routes, options) {
 }
 ```
 
-### 自定义路由处理
-
-你可以通过配置选项自定义路由处理逻辑：
-
-```typescript
-createReactRouterPlugin({
-  // 扩展每个路由
-  extendRoute(route, parent) {
-    // 添加自定义元数据
-    if (route.path?.includes('/admin/')) {
-      route.handle = { ...route.handle, requiresAuth: true, role: 'Chiko' }
-    }
-    return route
-  },
-
-  // 处理伪路由数组
-  onRoutesGenerated(routes) {
-    // 添加全局错误处理路由
-    routes.push({
-      path: '*',
-      name: 'not-found',
-      component: './NotFound.tsx'
-    })
-    return routes
-  },
-
-  // 自定义生成的客户端代码
-  onClientGenerated(code) {
-    // 添加自定义导入或逻辑
-    return `
-      // 添加路由守卫
-      import { setupGuards } from './guards'
-
-      ${code}
-
-      // 在导出前设置路由守卫
-      setupGuards(routes)
-    `
-  }
-})
-```
-
 ## 示例
 
 查看 [examples/react](https://github.com/chen-ziwen/better-pages-create/tree/main/examples/react) 目录获取完整示例。
@@ -344,8 +310,11 @@ MIT
 
 ## 贡献
 
-欢迎提交 Issues 和 Pull Requests ！
+欢迎提交 `Issues` 和 `Pull Requests` ！
 
 ## 致谢
 
-本项目受到 [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages) 和 [elegant-router](https://github.com/soybeanjs/elegant-router) 的启发。
+灵感来自以下项目:
+
+- [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages) 
+- [elegant-router](https://github.com/soybeanjs/elegant-router) 

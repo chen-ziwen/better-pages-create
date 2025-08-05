@@ -16,7 +16,7 @@ npm install @better-pages-create/core
 
 ```ts
 import type { PageResolver, UserOptions } from '@better-pages-create/core'
-import betterPagesPlugin from '@better-pages-create/react-router'
+import betterPagesPlugin from '@better-pages-create/core'
 
 // 创建您自己的解析器
 const myResolver: PageResolver = {
@@ -33,7 +33,7 @@ function createMyPlugin(options: UserOptions = {}) {
 
 ## 文档
 
-请参阅[主项目文档](https://github.com/chen-ziwen/better-pages-create/blob/main/README.md)获取更多信息。
+请参阅 [主项目文档](https://github.com/chen-ziwen/better-pages-create/blob/main/README.md) 获取更多信息。
 
 ## 许可证
 

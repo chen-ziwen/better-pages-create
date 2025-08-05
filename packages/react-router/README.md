@@ -53,12 +53,12 @@ export default function App() {
 - `src/pages/users/[id].tsx` → `/users/:id`
 - `src/pages/users/[...all].tsx` → `/users/*`
 - `src/pages/blog/(group)/post/index.tsx` → `/blog/post`
-- `src/pages/(auth)/login/index.tsx` → `/login` (带auth布局)
+- `src/pages/(auth)/login/index.tsx` → `/login` (带 auth 布局)
 - `src/pages/layout.tsx` → 布局组件
 
 ## 文档
 
-请参阅[主项目文档](https://github.com/chen-ziwen/better-pages-create/blob/main/README.md)获取更多信息。
+请参阅 [主项目文档](https://github.com/chen-ziwen/better-pages-create/blob/main/README.md) 获取更多信息。
 
 ## 许可证
 
