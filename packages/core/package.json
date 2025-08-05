@@ -1,7 +1,7 @@
 {
   "name": "@better-pages-create/core",
   "type": "module",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Better pages create core functionality",
   "author": "Chiko",
   "license": "MIT",

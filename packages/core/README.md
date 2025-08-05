@@ -5,7 +5,14 @@ Better Pages Create 的核心功能包，提供文件路由系统的基础功能
 ## 安装
 
 ```bash
+# npm
 npm install @better-pages-create/core
+
+# yarn
+yarn add @better-pages-create/core
+
+# pnpm
+pnpm add @better-pages-create/core
 ```
 
 ## 使用

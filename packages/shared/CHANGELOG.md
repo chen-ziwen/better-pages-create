@@ -1,5 +1,11 @@
 # @better-pages-create/shared
 
+## 0.1.5
+
+### Patch Changes
+
+- 更新使用文档
+
 ## 0.1.4
 
 ### Patch Changes

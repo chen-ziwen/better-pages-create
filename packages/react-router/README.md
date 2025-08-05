@@ -5,7 +5,14 @@ Better Pages Create 的 React Router 集成包，提供基于文件系统的 Rea
 ## 安装
 
 ```bash
+# npm
 npm install @better-pages-create/react-router
+
+# yarn
+yarn add @better-pages-create/react-router
+
+# pnpm
+pnpm add @better-pages-create/react-router
 ```
 
 ## 使用

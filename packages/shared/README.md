@@ -5,7 +5,14 @@ Better Pages Create 的共享工具包，提供核心包和集成包共用的工
 ## 安装
 
 ```bash
-npm install @better-pages-create/shared
+# npm
+npm install @better-pages-create/shard
+
+# yarn
+yarn add @better-pages-create/shard
+
+# pnpm
+pnpm add @better-pages-create/shard
 ```
 
 ## 使用

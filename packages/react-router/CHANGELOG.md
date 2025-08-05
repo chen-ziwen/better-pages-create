@@ -1,5 +1,14 @@
 # @better-pages-create/react-router
 
+## 0.1.8
+
+### Patch Changes
+
+- 更新使用文档
+- Updated dependencies
+  - @better-pages-create/shared@0.1.5
+  - @better-pages-create/core@0.1.6
+
 ## 0.1.7
 
 ### Patch Changes

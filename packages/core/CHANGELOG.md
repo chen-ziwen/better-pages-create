@@ -1,5 +1,13 @@
 # @better-pages-create/core
 
+## 0.1.6
+
+### Patch Changes
+
+- 更新使用文档
+- Updated dependencies
+  - @better-pages-create/shared@0.1.5
+
 ## 0.1.5
 
 ### Patch Changes
