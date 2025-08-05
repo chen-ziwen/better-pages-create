@@ -1,9 +1,6 @@
 import { readFileSync } from 'node:fs'
 import extractComments from 'extract-comments'
 
-/**
- * 从文件注释中提取 handle 元信息，支持单行和多行
- */
 export function extractHandleFromFile(filePath: string): Record<string, any> | null {
   try {
     const content = readFileSync(filePath, 'utf-8')
@@ -15,11 +12,6 @@ export function extractHandleFromFile(filePath: string): Record<string, any> | n
   }
 }
 
-/**
- * 从文件内容中提取 handle 元信息
- * @param content 文件内容字符串
- * @returns 解析后的 handle 对象或 null
- */
 export function extractHandleFromContent(content: string): Record<string, any> | null {
   try {
     const comments = extractComments(content)
@@ -50,16 +42,10 @@ export function extractHandleFromContent(content: string): Record<string, any> |
   }
 }
 
-/**
- * 验证 handle 对象的结构
- */
 export function validateHandle(handle: any): handle is Record<string, any> {
   return typeof handle === 'object' && handle !== null && !Array.isArray(handle)
 }
 
-/**
- * 合并多个 handle 对象
- */
 export function mergeHandles(...handles: (Record<string, any> | null)[]): Record<string, any> | null {
   const validHandles = handles.filter(validateHandle)
 
@@ -74,9 +60,6 @@ export function mergeHandles(...handles: (Record<string, any> | null)[]): Record
   return validHandles.reduce((merged, current) => deepMerge(merged, current), {})
 }
 
-/**
- * 深度合并两个对象
- */
 function deepMerge(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
   const result = { ...target }
 
@@ -100,9 +83,6 @@ function deepMerge(target: Record<string, any>, source: Record<string, any>): Re
   return result
 }
 
-/**
- * 从多个文件中提取并合并 handle 信息
- */
 export function extractAndMergeHandles(filePaths: string[]): Record<string, any> | null {
   return mergeHandles(...filePaths.map(extractHandleFromFile))
 }

@@ -13,17 +13,12 @@ import {
   UNDERSCORE_RE,
 } from '@better-pages-create/shared'
 
-/**
- * 将页面 glob 路径转换为路由文件信息
- */
 export function transformPageGlobToRouterFile(pageRoute: PageRoute, customBlockMap: Map<string, CustomBlock>) {
   const { path: fullPath, suffix, glob, importPath } = pageRoute
 
-  // 解析目录和文件
   const [file, ...dirs] = glob.split(PATH_SEPARATOR).reverse()
   const filteredDirs = dirs.filter(dir => !dir.startsWith(PAGE_DEGREE_SEPARATOR)).reverse()
 
-  // 处理特殊文件名
   if (PAGES_WITH_PATTERN.test(file)) {
     filteredDirs.push(file.replace(new RegExp(`\\.${suffix}$`), ''))
   }
@@ -46,9 +41,6 @@ export function transformPageGlobToRouterFile(pageRoute: PageRoute, customBlockM
   } as RouterFile
 }
 
-/**
- * 构建 React 路由路径
- */
 export function transformRouterNameToPath(name: string) {
   if (name === 'root') {
     return '/'
@@ -67,9 +59,6 @@ export function transformRouterNameToPath(name: string) {
   return `/${resolveName}`
 }
 
-/**
- * 将路由文件转换为名称路径映射
- */
 export function transformRouterFilesToMaps(files: RouterFile[]) {
   const maps = new Map<string, string | null>()
 
@@ -86,14 +75,10 @@ export function transformRouterFilesToMaps(files: RouterFile[]) {
   return maps
 }
 
-/**
- * 将条目转换为路由树
- */
 export function transformRouterEntriesToTrees(
   maps: RouterNamePathMap,
   files: RouterFile[],
 ) {
-  // 构建路由层级关系映射
   const routeHierarchy = new Map<string, Set<string>>()
 
   const entries = Array.from(maps.entries())
@@ -103,7 +88,6 @@ export function transformRouterEntriesToTrees(
     const routeName = entry[0]
     const parts = routeName.split(PAGE_DEGREE_SEPARATOR)
 
-    // 为每个层级建立父子关系
     for (let i = 0; i < parts.length; i++) {
       const currentRoute = parts.slice(0, i + 1).join(PAGE_DEGREE_SEPARATOR)
       const parentRoute = i > 0 ? parts.slice(0, i).join(PAGE_DEGREE_SEPARATOR) : null
@@ -117,7 +101,6 @@ export function transformRouterEntriesToTrees(
     }
   })
 
-  // 构建树结构
   const buildTree = (routeName: string): RouterTree => {
     const { basePath, matched, handle } = findMatchedFiles(files, routeName)
 
@@ -137,7 +120,6 @@ export function transformRouterEntriesToTrees(
     return tree
   }
 
-  // 找到所有顶级路由（没有父级的路由）
   const topLevelRoutes = entries
     .map(entry => entry[0])
     .filter(routeName => !routeName.includes(PAGE_DEGREE_SEPARATOR))
@@ -175,9 +157,6 @@ export function transformRouterEntriesToTrees(
   return trees
 }
 
-/**
- * 转换路由树为常量路由
- */
 export function transformRouteTreeToElegantConstRoute(
   tree: RouterTree,
   options: ResolvedOptions,
@@ -193,7 +172,6 @@ export function transformRouteTreeToElegantConstRoute(
     handle: isRouteGroup(routeName) ? null : constHandle,
   }
 
-  // 调用扩展路由函数
   if (extendRoute) {
     const extendedRoute = extendRoute(route, parent)
     if (extendedRoute) {
@@ -215,9 +193,6 @@ export function transformRouteTreeToElegantConstRoute(
   return route
 }
 
-/**
- * 查找匹配的文件
- */
 function findMatchedFiles(data: RouterFile[], currentName: string) {
   const matched: Record<string, string> = {}
   let indexHandle: Record<string, any> | null = null
