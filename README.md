@@ -160,6 +160,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 你可以通过在组件文件中添加特殊注释 `@handle` 来为路由添加元数据：
 
 ```tsx
+// 目前 @handle {} 大括号中的数据必须是 JSON 格式
+// 后续版本可能会优化这个问题
+
 /**
  * @handle {
  *   "role": "Chiko",
@@ -262,24 +265,7 @@ export function vueResolver(): PageResolver {
 }
 ```
 
-#### 2. 创建框架特定插件
-
-```typescript
-import type { Plugin } from 'vite'
-import betterPagesPlugin, { UserOptions } from '@better-pages-create/core'
-
-import { vueResolver } from './resolver'
-
-export function createVueRouterPlugin(userOptions: UserOptions = {}): Plugin {
-  // 设置自定义解析器
-  userOptions.resolver = vueResolver()
-
-  // 使用核心插件
-  return betterPagesPlugin(userOptions)
-}
-```
-
-#### 3. 路由转换和代码生成
+#### 2. 路由转换和代码生成
 
 你需要实现路由转换逻辑，将文件系统结构转换为特定框架的路由格式，并生成相应的客户端代码：
 
@@ -297,6 +283,23 @@ function generateVueRouterCode(routes, options) {
 
     export default routes
   `
+}
+```
+
+#### 3. 创建框架特定插件
+
+```typescript
+import type { Plugin } from 'vite'
+import betterPagesPlugin, { UserOptions } from '@better-pages-create/core'
+
+import { vueResolver } from './resolver'
+
+export function createVueRouterPlugin(userOptions: UserOptions = {}): Plugin {
+  // 设置自定义解析器
+  userOptions.resolver = vueResolver()
+
+  // 使用核心插件
+  return betterPagesPlugin(userOptions)
 }
 ```
 
